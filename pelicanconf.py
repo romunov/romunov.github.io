@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = 'Roman Luštrik'
 SITENAME = 'Roman Luštrik not Inc.'
-SITEURL = ''
+SITEURL = 'http://biolitika.si'
 
 PATH = 'content'
 
@@ -41,7 +41,7 @@ DEFAULT_PAGINATION = 5
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
 
-THEME = "C:/Users/romunov/Documents/workspace/biolitika-www/raw_themes/pelican-blueidea"
+THEME = "./raw_themes/pelican-blueidea"
 
 # pelican-blueidea theme settings:
 # Display pages list on the top menu
@@ -66,13 +66,9 @@ DISPLAY_SEARCH_FORM = (False)
 #PAGES_SORT_ATTRIBUTE = (Date)
 
 # Display the "Fork me on Github" banner
-GITHUB_URL = ('https://github.com/romunov/pelican-blueidea')
+# GITHUB_URL = ('https://github.com/romunov/pelican-blueidea')
 
-# formatting of date
-DATE_FORMATS = {
-    'en': ('usa','%a, %d %b %Y'),
-    'si': ('si','%d.%m.%Y'),
-}
+DEFAULT_DATE_FORMAT = "%Y-%m-%d"
 
 STATIC_PATHS= ['images', 'extra/CNAME']
 EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'}, }
@@ -80,3 +76,4 @@ OUTPUT_PATH = 'docs/'
 
 DELETE_OUTPUT_DIRECTORY = True
 OUTPUT_RETENTION = ['.git', 'CNAME']
+

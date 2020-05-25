@@ -42,8 +42,8 @@ with open('./data/spucane_st_zadev.txt', mode='wt') as wf:
 random.seed(357)
 
 random_rows = []
-for rng in range(10):
-    random_rows.append(random.randrange(0, len(xy)+1))
+for rng in range(len(xy) - 1):
+    random_rows.append(random.randrange(start=0, stop=len(xy)))
 
 [xy[rng] for rng in random_rows]
 ```
@@ -67,6 +67,9 @@ Skripta vrne očiščeno datoteko in seznam zadev. Za te zadeve sem zaprosil in 
 Pri podjetju iz primorske regije, ki se ukvarja s skladiščenjem in pretovarjanjem vozil, je inšpektorat ugotovil, da nima zaposlenih delavcev, na podjetju pa je bilo aktivnih šest delavcev. Ti niso imeli dovolilnice oz. niso zaposleni, imajo pa priglašeno dejavnost samostojnega podjetnika. Delodajalec je inšpektorju pokazal izjave, da delavci ne želijo biti zaposleni pri tem podjetju iz različnih razlogov. Ponudil je tudi dokaz, da jih je želel zaposliti, a te pogodbe delavci niso želeli skleniti. Tale navedba se mi je zdela zanimiva
 
 > ZDR-1 določa, da je potrebno skleniti pogodbo o zaposlitvi, svobodna in vzajemna volja ne more biti v nasprotju z zakonodajo.
+
+# Zadeva 710-2452/2018
+Inšpektorica je ugotovila, da med podjetjem in samostojnim podjetnikom obstajajo elementi delovnega razmerja (v nasprotu z drugim odstavkom 13. člena ZDR-1) in izdala plačilni nalog za 1500 EUR globe. Sicer je zagrožena globa je do 8.000,00 EUR.
 
 # Zadeva 06100-1604/2016
 Inšpektor z območne enote Celje je javnemu zavodu prepovedal opravljanje dela z delavcem, ki je delal kot samostojni podjetnik. Inšpektor je ugotovil, da obstajajo elementi delovnega razmerja, v ozir pa je vzel tudi pogodbo o izvajanju del.

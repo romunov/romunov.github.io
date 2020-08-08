@@ -1,6 +1,6 @@
 Title: Odkrivanje elementov delovnega razmerja s strani Inšpektorata RS za delo
 Date: 2020-05-23 10:48
-Modified: 2020-05-23 10:48
+Modified: 2020-08-08 11:12
 Tags: ijz, Python, OCR, tesseract, pypdfocr
 Keywords: informacije javnega značaja, elementi delovnega razmerja, zdr-1, inšpekcijski postopek, Python, OCR
 Category: IJZ
@@ -132,3 +132,35 @@ Inšpektor delodajalcu prepove opravljanje dela oz. delovnega procesa z delavcem
 
 # Zadeva 710-332/2017
 Inšpektor pravni in odgovorni osebi očita štiri prekrške od a do č. V dokumentu je nepobrisan samo prekršek a. V prekršku a je očitano, da je bilo delavcu omogočeno delo na podlagi pogodbe civilnega prava, kljub obstoju elementov delovnega razmerja, kar je v nasprotju z 2. odstavkom 13. člena ZDR-1. Pravna oseba je za ta prekršek dobila izrečene 4500 EUR globe, odgovorna pa 450 EUR. Poleg globe je še obračunana sodna taksa 1050 EUR za pravno in 160 za odgovorno osebo.
+
+> Naslednje zadeve sem prejel 2020-07-29
+
+# Zadeva 06139-392/2015-3
+Inšpektor delodajalcu prepove opravljanje delovnega procesa z delavcem, ker mu omogoča opravljanje dela na podlagi civilnega prava - pogodbe o opravljanju storitev. Pogodba vsebuje elemente delovnega razmerja, v nasprotju z 2. drugim odstavkom 13. člena Zakona o delovnih razmerjih. Verjetno gre za s.p., a zaradi umika osebnih informacij iz tega dokumenta to nedvoumno ne znam razbrati. V primeru, da delodajalec ne bo odpravil nepravilnosti, je zagrožena globa 4500 EUR za pravno osebo in 350 EUR za odgovorno osebo.
+
+# 06112-811/2014-1
+Delavec s priglašeno dejavnostjo v gostinstvu na podlagi pogodbe o sodelovanju pri delodajalcu opravlja delo. Inšpektor je ugotovil, da obstajajo elementi delovnega razmerja po drugem odstavku 13. člena Zakona o delovnih razmerjih. V kolikor delodajalec ne odpravi nepravilnosti, je zagrožena globa 4500 EUR za pravno in 350 EUR za odgovorno osebo.
+
+# 06141-590/2016
+Inšpektorica je dvema delavkama s priglašeno dejavnostjo prepovedala opravljanje dela pri delodajalcu, ker je slednji omogočil opravljanje dela na podlagi pogodb civilnega prava, kar je v nasprotju z drugim odstavkom 13. člena Zakona o delovnih razmerjih, saj vsebuje delo vse elemente delovnega razmerja. Zagrožena globa je 4500 EUR za delodajalca in 350 EUR za odgovorno osebo.
+
+# 06100-583/2016
+Inšpektor delodajalcu prepove opravljati dela oz. opravljanje delovnega proces in uporabe sredstev za delo z delavko, ki ima priglašeno dejavnost dokler bo pri delodajalcu opravljala delo na način, ki vsebuje elemente delovnega razmerja, kar je v nasprotju z drugim odstavkom 13. člena Zakona o delovnih razmerjih. Zagrožena je kaze 4500 EUR za delodajalca in 350 EUR za odgovorno osebo.
+
+# 06100-1228/2016
+Inšpektor je ob inšpekcijskem pregledu ugotovil, da imajo nekateri delavci status (pobrisano, verjetno s.p.), z družbo sklenjeno pogodbo civilnega prava. Inšpektor je ugotovil, da obstajaji vsi elementi delovnega razmerja, kot jih določa 4. člen Zakona o delovnih razmerjih-1 in ni v skladju z drugim odstavkom 13. člena istega zakona. Delodajalec je obljubil, da bo z navedenimi zaposlenimi sklenil pogodbo o zaposlitvi do 2017-01-01, ker potrebuje nekaj časa za spremembo internega akta. Za delodajalca je tudi zagroženakazen 2000 EUR in 200 EUR za neizpolnjevanje pisnega poročila ter 4500 EUR kazni za neizvrševanje določbe za pravno in 350 EUR za odgovorno osebo.
+
+# 710-603/2019-3
+V tej zadevi je veliko informacij umaknjenih in je težko razbrati za kaj gre. Da se razbrati, da je pri pravni osebi nekdo opravljal dleo na podlagi pogodbe civilnega prava s čimer je kršila drugi odstavek 13. člena Zakona o delovnih razmerjih-1. Pravni in odgovorni osebi je bil izrečen opomin in vsaki tudi plačilo sodne takse v višini 30 EUR.
+
+# 710-2691/2017-3
+Inšpektorica je ugotovila, da je bila kršiteljica naročnica del z brezposelno osebo. Ugotovljeni so bili elementi delovnega razmerja, kar je v nasprotju z drugim odstavkom 13. člena Zakona o delovnih razmerjih-1 in je tako storila prekršek po tretji točki prvega odstavka v povezavi z drugim odstavkom 217. člena Zakona o delovnih razmerjih [_ja, taka klobasa v odločbi piše_]. Izrečen ji je bil opomin in plačilo stroške postopka odmerjene sodne takse v vrednosti 30 EUR.
+
+# 710-2214/2018
+Inšpektor je ugotovil, da je kršiteljica omogočila/dovolila, da je pri njej na podlagi pogodbe civilnega prava opravljala delo oseba (pobrisano), kar je v nasprotju z določbami 2. odstavka 13. člena Zakona o delovnih razmerjih-1. Samostojni podjetnici, ki zaposluje manj kot 10 oseb, se tako izreče globa 1500 EUR in 150 EUR sodne takse.
+
+# 710-1885/2017
+Inšpektorica pravni in odgovorni osebi izreče opomin, ker je omogočila opravljane dela prodajalke, verjetno na podlagi pogodbe civilnega prava, na sistematiziranem delovnem mestu prodajalke z vsemi elementi delovnega razmerja. To je v nasprotju z drugim odstavkom 13. člena Zakona o delovnih razmerjih. Pravna in odgovorna oseba morata vsaka plačati 30 EUR stroškov postopka - sodno takso.
+
+# 710-1390/2017
+Inšpektor pravni in odgovorni osebi očita odgovornost za prekšek, ker je odgovorna oseba v imenu pravne osebe sklenila pogodbo civilnega prava z osebo, ki ima priglašeno dejavnost, in ji tako omogočila delo, ki je v nasprotju z drugim odstavkom 13. člena Zakona o delovnih razmerjih. Izrečena je globa 3000 EUR za pravno in 450 EUR za odgovorno osebo.

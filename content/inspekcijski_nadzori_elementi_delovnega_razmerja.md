@@ -1,6 +1,6 @@
 Title: Odkrivanje elementov delovnega razmerja s strani Inšpektorata RS za delo
 Date: 2020-05-23 10:48
-Modified: 2020-08-08 11:12
+Modified: 2020-10-10 11:34
 Tags: ijz, Python, OCR, tesseract, pypdfocr
 Keywords: informacije javnega značaja, elementi delovnega razmerja, zdr-1, inšpekcijski postopek, Python, OCR
 Category: IJZ
@@ -164,3 +164,36 @@ Inšpektorica pravni in odgovorni osebi izreče opomin, ker je omogočila opravl
 
 # 710-1390/2017
 Inšpektor pravni in odgovorni osebi očita odgovornost za prekšek, ker je odgovorna oseba v imenu pravne osebe sklenila pogodbo civilnega prava z osebo, ki ima priglašeno dejavnost, in ji tako omogočila delo, ki je v nasprotju z drugim odstavkom 13. člena Zakona o delovnih razmerjih. Izrečena je globa 3000 EUR za pravno in 450 EUR za odgovorno osebo.
+
+> Naslednje zadeve sem prejel 2020-09-29
+
+# 06100-1223/2018-7
+V gostinskem lokalu je inšpektorica odredila prepoved opravljanja dela delavcev (5) do odprave nepravilnosti. Odprava izgleda tako, da bo podjetje moralo, v kolikor želi sodelovati s temi petimi osebami, zaposliti, saj vsebina dela vsebuje vse elemente delovnega razmerja. Inšpektorica je ugotovila tudi druge kršitve, denimo opravljanje dela na podlagi podjemne pogodbe, kjer delavec ni bil zavarovan za primer poklicne bolezni in primer poškodbe pri delu.
+
+# 710-243/2018-3
+Pravna oseba in njena odgovorna oseba (direktor) sta sklenila pogodbi o sodelovanju, v katerih obstajajo elementi delovnega razmerja v skladu s 4. in v povezavi z 22. oz 54. členom, kar je v nasprotju z 2. odstavkom 13. člena ZDR1. Pravna in odgovorna oseba dobita opomin in 30 EUR kazni (vsaka).
+
+# 710-635/2019-3
+Kršitelj je prejel opomin in plačilo sodne takse (30 EUR), ker je omogočil natakarici delo na podlagi podjemne pogodbe. To delo ima vse elemente delovnega razmerja v skladu s 4. in v povezavi z 22. oz. 54. čl.  Zakona o delovnih razmerjih (Ur.l.RS, štev. 21/2013 in 52/2016) [si že videl/a toliko pik v eni povedi?].
+
+# 06139-831/2016
+Pravni osebi se prepove opravljanje dela voznika delavcu dokler se ne odpravi nepravilnosti. Inšpektor očita nepravilnost, ki je bila storjena s tem, da je delavcu delodajalec omogočil opravljanje dela sistematiziranega delovnega mesta z vsemi elementi delovnega razmerja v nasprotju z 2. odstavkom 13. člena ZDR. To nepravilnost so odkrili sicer pri nadzoru nad opravljanjem dela dijakov in študentov z napotnico študentskega servisa.
+
+# 06100-2128/2017-3
+Delodajalcu se do odprave nepravilnosti prepove opravljanje dela delavke, ker je dopustil opravljanje dela (v kuhinji) na podlagi civilne pogodbe v nasprotju s 13. členom ZDR-1, in sicer zato, ker vsebuje elemente delovnega razmerja v skladu s 4. točko v povezavi z 22. členom istega zakona.
+V tej odločbi je inšpektorica opozorila, da v primeru, da bo dvakrat v šestih mesecih ali več kot dvakrat v daljšem obdobju ponovila kršitev, bo zavezancu zapečatila sredstva za delo, delovne prostore ter delovišče ter druge prostore.
+
+# 06100-1020/2017-011003
+Delodajalcu se prepove opravljanje delovnega procesa oziroma uporabe sredstev za delo z dvema delavcema (špedicija in druge spremljajoče prometne dejavnosti). Nepravilnost je storjena s tem, da jima je omogočil opravljanje dela na podlagi pogodb civlnega prava na način, da njuno delo vsebuje vse elemente delovnega razmerja. Prepoved velja do odprave nepravilnosti.
+
+# 06100-1427/2016
+Delodajalcu se prepove opravljanje dela oziroma opravljanje delovnega procesa in uporabe sredstev s šestimi delavci, dokler bodo pri delodajalcu opravljali delo na način, ki vsebuje elemente delovnega razmerja in s tem zagotovi spoštovanje določb 2. odstavka 13. člena ZDR-1.
+
+# 710-985/2019-4
+Kršiteljica je kot odgovorna oseba z drugo osebo sklenila pogodbo za opravljanje dela. S tem je kršila 2. odstavek 13. člena ZDR, ker obstajajo elementi delovnega razmerja v skladu s 4. in v povezavi z 22. oz. 54. členom Zakona o delovnih razmerjih. Izrečen je bil opomin in plačilo stroške postopka v višini 30 EUR.
+
+# 710-1495/2018-2
+V delavnici strojnega varjenja filtrov, valjanja in brušenja je ob inšpekcijskem nadzoru pri zavezancu inšpektorica odkrila, da pri zavezancu opravlja delo oseba, kjer so vsi elementi delovnega razmerja v skladu s 4. in v povezavi z 22. členom ZDR-1. Pravni osebi je naložila 3.000,00 EUR, odgovorni pa 450,00 EUR kazni (z možnostjo plačile polovičnega zneska).
+
+# 06139-869/2015
+Delodajalec more dvema delovkama (pomoč pri postrežbi pijač in čiščenje lokala) skleniti pogodbo o zaposlovanju in ju prijaviti v zavarovanje. S tem bo zagotovil spoštovanje 2. odstavka 13. člena ZDR-1.

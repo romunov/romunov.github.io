@@ -1,6 +1,6 @@
 title: Seznam bizark, ki mi pridejo na oko ali uho
 date: 2020-11-15 13:33
-modified: 2020-11-15 13:33
+modified: 2020-12-01 17:35
 tags: komentar
 keywords: bizarkno, ukrepi, SARS-CoV-2, COVID-19
 category: Razmišljanja
@@ -12,6 +12,20 @@ status: published
 Tole je nekaj bizark, ki sem jih slišal ali videl/bral na lastne oči. Primeri niso mišljeni, da bom(o) na njih kazali s prstom ali jih kakorkoli zasramovali. Kazen je že inherentna v (ne)dejanju. Ti primeri so zanimivi za razumevanje kako se ljudje spopadajo, ko so postavljeni med dva mlinska kamna (možnost, da zboli za okužbo in kaznijo, ki jo lahko izda nadležni organ) in kako trenutni (ne)ukrepi (ne)delujejo. Kolikor mi je znano za enkrat država odzivov ne preučuje sistematsko. Za posledico ne vemo kakšno je dejansko stanje. Če poznaš še kak primer, se priporočam (ga objavim anonimno). Ta zapis je bolj mišljen zame kot pa nek obsežen pregled stanja na terenu.
 
 Če se vidite v kakem od primerov, je to zgolj naključje (razen v tistem enem primeru, ko ste dejansko vi).
+
+> Prebivalko doma za starejše občane testirajo na SARS-Cov-2 in jo nato pripeljejo na slikanje. V tej točki rezultati testa še niso znani. Izkaže se, da je bila pozitivna, z njo pa je bilo v stiku več kosov medicinskega osebja. Čez nekaj dni dve administratorki z oddelka pozitivni. To vse ni bila ovira, da si čez nekaj dni ekipa ne bi postregla z narezkom in sokom, da proslavijo okroglo obletnico ene od oseb z oddelka.
+
+> V eni ljubljanski lekarni so trije farmacevti. Sicer je lekarna zračna, a majhna (kot tista kajžica iz ljudske pesmi). Farmacevtu na blagajni pada maska pod nos, ostala dva jo pa po potrebi nadeneta le, ko prideta blizu pulta.
+
+> V Štajerski prestolnici se dogajajo najrazličnejše zadeve. Par, ki sta verjela v teorijo zarote glede COVID-a, sta zbolela. On je dobil neko hujšo vročino (več podrobnosti ni na voljo), ona pa se je po pozitivnem testu sprehajala na Mariborsko Piramido, kjer jo je nekdo prepoznal. Izgovarjala se je, da se je "samo šla na klopco v park usest".
+
+> Tale prihaja iz neznanega kraja. Soseda se je, po nekaj minut pogovora, "pohvalila", da se je mož šel testirati, ker se je počutil slabo. In se je izkazalo, da je bil pozitiven. Epilog ni znan.
+
+> Na Gorenjskem neznano kje je k možakarju prišla na obisk teta. Po pol ure klepetanja teta by-the-usput omeni, da se je šla testirat in je bila pozitivna. Ampak po njenih besedah ni panike, ker nima simptomov. Po tem, ko je bila promptno odslovljena čez okno je možakar v samoizolaciji.
+
+> Nekje na Celjskem v hišici, kjer potoček žubori in krokarji pojejo svoj kra-kra, družina živi. Vsi po malem zboleli (vneto grlo, vročina), a ker vsi še vohajo in okušajo se niso odpravili na test. Posledično nemoteno hodijo v službo.
+
+> Policija z marico z vožnjo čez pločnik zapre pot dvema sprehajalcema. Sprehajata se namreč z manj kot 2 m medsebojne razdalje. Sicer živita v skupnem gospodinjstvu, ampak ker nista poročena oz. ker se to ne vidi iz uradnih evidenc, prejmeta plačilni nalog.
 
 > V vrtcu so pri enem otroku odkrili okužbo z virusom. Vsi otroci so dobili odrejeno karanteno. Ker je otrok ostal brez dnevnega varstva, je dobila mati odrejeno nadomestilo za varstvo otroka. Mož hodi v službo, ker njemu to nadomestilo ne pripada. Ker gre za majhno podjetje, je večina zaposlenih v podobni situaciji (imajo nekoga doma v karanteni) in si ne morejo privoščiti, da bi delo ustavili. Sicer vzdržujejo varno razdaljo in nosijo maske. Razen za malico, ko se nagužvajo v čajnico, kjer obedujejo in klepetajo brez mask.
 

@@ -1,6 +1,6 @@
 title: Seznam bizark, ki mi pridejo na oko ali uho
 date: 2020-11-15 13:33
-modified: 2020-12-01 17:35
+modified: 2020-12-07 19:02
 tags: komentar
 keywords: bizarkno, ukrepi, SARS-CoV-2, COVID-19
 category: Razmišljanja
@@ -12,6 +12,8 @@ status: published
 Tole je nekaj bizark, ki sem jih slišal ali videl/bral na lastne oči. Primeri niso mišljeni, da bom(o) na njih kazali s prstom ali jih kakorkoli zasramovali. Kazen je že inherentna v (ne)dejanju. Ti primeri so zanimivi za razumevanje kako se ljudje spopadajo, ko so postavljeni med dva mlinska kamna (možnost, da zboli za okužbo in kaznijo, ki jo lahko izda nadležni organ) in kako trenutni (ne)ukrepi (ne)delujejo. Kolikor mi je znano za enkrat država odzivov ne preučuje sistematsko. Za posledico ne vemo kakšno je dejansko stanje. Če poznaš še kak primer, se priporočam (ga objavim anonimno). Ta zapis je bolj mišljen zame kot pa nek obsežen pregled stanja na terenu.
 
 Če se vidite v kakem od primerov, je to zgolj naključje (razen v tistem enem primeru, ko ste dejansko vi).
+
+> V podjetju si sodelavke podajajo naslov frizerke, ki _incognito_ ureja pričeske na domu.
 
 > Prebivalko doma za starejše občane testirajo na SARS-Cov-2 in jo nato pripeljejo na slikanje. V tej točki rezultati testa še niso znani. Izkaže se, da je bila pozitivna, z njo pa je bilo v stiku več kosov medicinskega osebja. Čez nekaj dni dve administratorki z oddelka pozitivni. To vse ni bila ovira, da si čez nekaj dni ekipa ne bi postregla z narezkom in sokom, da proslavijo okroglo obletnico ene od oseb z oddelka.
 

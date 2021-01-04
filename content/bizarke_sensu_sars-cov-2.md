@@ -1,6 +1,6 @@
 title: Seznam bizark, ki mi pridejo na oko ali uho
 date: 2020-11-15 13:33
-modified: 2020-12-07 19:02
+modified: 2021-01-04 09:29
 tags: komentar
 keywords: bizarkno, ukrepi, SARS-CoV-2, COVID-19
 category: Razmišljanja
@@ -12,6 +12,8 @@ status: published
 Tole je nekaj bizark, ki sem jih slišal ali videl/bral na lastne oči. Primeri niso mišljeni, da bom(o) na njih kazali s prstom ali jih kakorkoli zasramovali. Kazen je že inherentna v (ne)dejanju. Ti primeri so zanimivi za razumevanje kako se ljudje spopadajo, ko so postavljeni med dva mlinska kamna (možnost, da zboli za okužbo in kaznijo, ki jo lahko izda nadležni organ) in kako trenutni (ne)ukrepi (ne)delujejo. Kolikor mi je znano za enkrat država odzivov ne preučuje sistematsko. Za posledico ne vemo kakšno je dejansko stanje. Če poznaš še kak primer, se priporočam (ga objavim anonimno). Ta zapis je bolj mišljen zame kot pa nek obsežen pregled stanja na terenu.
 
 Če se vidite v kakem od primerov, je to zgolj naključje (razen v tistem enem primeru, ko ste dejansko vi).
+
+> Tale prihaja s Primorskega konca. Oseba dostavlja eno ključno slovensko živilo. Pri tem vestno nosi masko. Pri eni stranki ga ogovorijo, da "sej pr nas je pa ja ne nuca". Čez dva dni oseba zboli in gre na testiranje. Izve, da je pozitiven. Kot dober državljan svoji stranki sporoči o svojem zdravstvenem stanju, nakar mu po telefonu odgovorijo "aja, ja, sej pr nas smo pozitivni zdej že nekaj časa".
 
 > V podjetju si sodelavke podajajo naslov frizerke, ki _incognito_ ureja pričeske na domu.
 

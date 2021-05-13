@@ -70,7 +70,7 @@ DISPLAY_SEARCH_FORM = (False)
 
 DEFAULT_DATE_FORMAT = "%Y-%m-%d"
 
-STATIC_PATHS= ['images', 'extra/CNAME']
+STATIC_PATHS= ['images', 'extra/CNAME', 'gross_cumsum_salary_files']
 EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'}, }
 OUTPUT_PATH = 'docs/'
 

@@ -1,0 +1,4 @@
+raw_themes/pelican-blueidea/.git
+__pycache__
+develop_server.sh
+fabfile.py

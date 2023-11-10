@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Biolitika - Notion</title>
+        <link rel="stylesheet" href="https://biolitika.si/theme/css/main.css" />
+        <link href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Biolitika Atom Feed" />
+        <link href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika RSS Feed" />
+          <link href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika Tags RSS Feed" />
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://biolitika.si/">Biolitika </a></h1>
+                <nav><ul>
+                    <li><a href="https://biolitika.si/category/howto.html">HowTo</a></li>
+                    <li><a href="https://biolitika.si/category/ijz.html">IJZ</a></li>
+                    <li><a href="https://biolitika.si/category/opensource.html">OpenSource</a></li>
+                    <li><a href="https://biolitika.si/category/razmisljanja.html">Razmišljanja</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://biolitika.si/working-with-notion-api-from-r.html">Working with Notion API from R</a></h1>
+<footer class="post-info">
+        <span>2021-06-21</span>
+<span>| tags: <a href="https://biolitika.si/tag/r.html">R</a><a href="https://biolitika.si/tag/api.html">API</a><a href="https://biolitika.si/tag/notion.html">Notion</a><a href="https://biolitika.si/tag/json.html">json</a><a href="https://biolitika.si/tag/httr.html">httr</a></span>
+</footer><!-- /.post-info --><p>When searching for a solution where I could store some flat files as a database, <a href="https://www.notion.so/">Notion</a> came up. The nice thing about it is that it offers an API to most of its functionality. At the time of this writing this is still in beta, but hopefully it will become even more powerful in the future.</p>
+<p>The functionality I'm concerned with right now is interacting with the databases. The boilerplate code to start communicating via the Notion API is</p>
+<div class="highlight"><pre><span></span><code><span class="nf">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span>
+
+<span class="n">NOTION_KEY</span> <span class="o">=</span> <span class="s">&quot;enter-your-key&quot;</span>
+
+<span class="n">ask</span> <span class="o">&lt;-</span> <span class="nf">GET</span><span class="p">(</span>
+  <span class="n">url</span> <span class="o">=</span> <span class="s">&quot;https://api.notion.com/v1/databases/&quot;</span><span class="p">,</span>
+  <span class="nf">add_headers</span><span class="p">(</span><span class="s">&quot;Authorization&quot;</span> <span class="o">=</span> <span class="nf">paste</span><span class="p">(</span><span class="s">&quot;Bearer&quot;</span><span class="p">,</span> <span class="n">NOTION_KEY</span><span class="p">),</span>
+              <span class="s">&quot;Notion-Version&quot;</span> <span class="o">=</span> <span class="s">&quot;2021-05-13&quot;</span><span class="p">))</span>
+<span class="nf">stop_for_status</span><span class="p">(</span><span class="n">ask</span><span class="p">)</span>
+<span class="nf">fromJSON</span><span class="p">(</span><span class="nf">rawToChar</span><span class="p">(</span><span class="n">ask</span><span class="o">$</span><span class="n">content</span><span class="p">))</span>
+</code></pre></div>
+
+
+<p>You should get an R list of elements returned by this <code>databases</code> endpoint.</p>
+<p>To write to a database (add a row), you need to prepare an object that corresponds to the corresponding table schema. A JSON object would look like something like this:</p>
+<div class="highlight"><pre><span></span><code>properties: <span class="o">{</span>
+      Name: <span class="o">{</span>
+        title: <span class="o">[</span>
+          <span class="o">{</span>
+            text: <span class="o">{</span>
+              content: <span class="s1">&#39;Tuscan Kale&#39;</span>,
+            <span class="o">}</span>,
+          <span class="o">}</span>,
+        <span class="o">]</span>,
+      <span class="o">}</span>,
+      Description: <span class="o">{</span>
+        text: <span class="o">[</span>
+          <span class="o">{</span>
+            text: <span class="o">{</span>
+              content: <span class="s1">&#39;A dark green leafy vegetable&#39;</span>,
+            <span class="o">}</span>,
+          <span class="o">}</span>,
+        <span class="o">]</span>,
+      <span class="o">}</span>,
+      <span class="s1">&#39;Food group&#39;</span>: <span class="o">{</span>
+        <span class="k">select</span>: <span class="o">{</span>
+          name: <span class="s1">&#39;🥦 Vegetable&#39;</span>,
+        <span class="o">}</span>,
+      <span class="o">}</span>,
+      Price: <span class="o">{</span>
+        number: <span class="m">2</span>.5,
+      <span class="o">}</span>,
+    <span class="o">}</span>,
+</code></pre></div>
+
+
+<p>Using a similar logic, I wrote my call in R</p>
+<div class="highlight"><pre><span></span><code><span class="n">pb</span> <span class="o">&lt;-</span> <span class="nf">list</span><span class="p">(</span>
+  <span class="n">parent</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">database_id</span> <span class="o">=</span> <span class="n">NOTION_DATABASE_ID</span><span class="p">),</span>
+  <span class="n">properties</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span>
+    <span class="n">Name</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span>
+      <span class="n">title</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">text</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">content</span> <span class="o">=</span> <span class="s">&quot;4&quot;</span><span class="p">))</span>
+    <span class="p">),</span>
+    <span class="n">Genus</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span>
+      <span class="n">rich_text</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">text</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">content</span> <span class="o">=</span> <span class="s">&quot;Neki&quot;</span><span class="p">))</span>
+    <span class="p">),</span>
+    <span class="n">Species</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span>
+      <span class="n">rich_text</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">text</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">content</span> <span class="o">=</span> <span class="s">&quot;noviga&quot;</span><span class="p">))</span>
+    <span class="p">)</span>
+  <span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div>
+
+
+<p>but this produced the following error</p>
+<div class="highlight"><pre><span></span><code>body failed validation. Fix one: body.properties.Name.title.id should be defined, instead was <span class="sb">`</span>undefined<span class="sb">`</span>.
+body.properties.Name.title.name should be defined, instead was <span class="sb">`</span>undefined<span class="sb">`</span>.
+body.properties.Name.title.start should be defined, instead was <span class="sb">`</span>undefined<span class="sb">`</span>.
+</code></pre></div>
+
+
+<p>Long story short, it turns out that every curly braces and array need to be a <code>list()</code>. This worked (notice the extra <code>list()</code> calls compared to the original):</p>
+<div class="highlight"><pre><span></span><code><span class="n">pb</span> <span class="o">&lt;-</span> <span class="nf">list</span><span class="p">(</span>
+  <span class="n">parent</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">database_id</span> <span class="o">=</span> <span class="n">NOTION_DATABASE_ID</span><span class="p">),</span>
+  <span class="n">properties</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span>
+    <span class="n">Name</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span>
+      <span class="n">title</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span>
+        <span class="nf">list</span><span class="p">(</span><span class="n">text</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">content</span> <span class="o">=</span> <span class="s">&quot;4&quot;</span><span class="p">))</span>
+      <span class="p">)</span>
+    <span class="p">),</span>
+    <span class="n">Genus</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span>
+      <span class="n">rich_text</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span>
+        <span class="nf">list</span><span class="p">(</span><span class="n">text</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">content</span> <span class="o">=</span> <span class="s">&quot;Neki&quot;</span><span class="p">))</span>
+      <span class="p">)</span>
+    <span class="p">),</span>
+    <span class="n">Species</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span>
+      <span class="n">rich_text</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span>
+        <span class="nf">list</span><span class="p">(</span><span class="n">text</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">content</span> <span class="o">=</span> <span class="s">&quot;noviga&quot;</span><span class="p">))</span>
+      <span class="p">)</span>
+    <span class="p">)</span>
+  <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">send.row</span> <span class="o">&lt;-</span> <span class="nf">POST</span><span class="p">(</span>
+  <span class="n">url</span> <span class="o">=</span> <span class="s">&quot;https://api.notion.com/v1/pages&quot;</span><span class="p">,</span>
+  <span class="nf">add_headers</span><span class="p">(</span><span class="s">&quot;Authorization&quot;</span> <span class="o">=</span> <span class="nf">paste</span><span class="p">(</span><span class="s">&quot;Bearer&quot;</span><span class="p">,</span> <span class="n">NOTION_KEY</span><span class="p">),</span>
+              <span class="s">&quot;Notion-Version&quot;</span> <span class="o">=</span> <span class="s">&quot;2021-05-13&quot;</span><span class="p">),</span>
+  <span class="n">body</span> <span class="o">=</span> <span class="n">pb</span><span class="p">,</span>
+  <span class="n">encode</span> <span class="o">=</span> <span class="s">&quot;json&quot;</span>
+<span class="p">)</span>
+</code></pre></div>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>1995 style links</h2>
+                        <ul>
+                            <li><a href="https://stackoverflow.com/users/322912/roman-lu%C5%A1trik">visit me on StackOverFlow</a></li>
+                            <li><a href="http://metinalista.si/category/metamorfoza">#metamorfoza podcast (SI)</a></li>
+                            <li><a href="https://www.r-bloggers.com">r-bloggers</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">RSS feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate">Tag RSS feed</a></li>
+
+                            <li><a href="https://github.com/romunov">GitHub</a></li>
+                            <li><a href="https://twitter.com/romunov">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/roman-lu%C5%A1trik-5a6586ab">LinkedIn</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-22752654-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

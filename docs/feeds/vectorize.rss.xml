@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Biolitika - Vectorize</title><link>https://biolitika.si/</link><description></description><lastBuildDate>Wed, 17 Apr 2019 00:00:00 +0200</lastBuildDate><item><title>Vectorizing functions in R is easy</title><link>https://biolitika.si/vectorizing-functions-in-r-is-easy.html</link><description>&lt;p&gt;Imagine you have a function that only takes one argument, but you would really like to work on a vector of values. A short example on how function &lt;code&gt;Vectorize()&lt;/code&gt; can accomplish this. Let's say we have a &lt;code&gt;data.frame&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;xy&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="nf"&gt;data.frame&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sample&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;c&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;C_pre_sample1&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;C_post_sample1&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;T_pre_sample2&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                            &lt;span class="s"&gt;&amp;quot;T_post_sample2&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;NA_pre_sample1&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+                 &lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;runif&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+&lt;span class="c1"&gt;#           sample     value&lt;/span&gt;
+&lt;span class="c1"&gt;# 1  C_pre_sample1 0.3048032&lt;/span&gt;
+&lt;span class="c1"&gt;# 2 C_post_sample1 0.3487163&lt;/span&gt;
+&lt;span class="c1"&gt;# 3  T_pre_sample2 0.3359707&lt;/span&gt;
+&lt;span class="c1"&gt;# 4 T_post_sample2 0.6698358&lt;/span&gt;
+&lt;span class="c1"&gt;# 5 NA_pre_sample1 0.9490707&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and you want to subset only samples that start with &lt;code&gt;C_pre&lt;/code&gt; or &lt;code&gt;T_pre&lt;/code&gt;. Of course you can construct a nice regular expression, implement an anonymouse function using &lt;code&gt;lapply&lt;/code&gt;/&lt;code&gt;sapply&lt;/code&gt; or use one of those fancy tidyverse functions.&lt;/p&gt;
+&lt;p&gt;A long winded way would be to find matches using regular expression for each level, combine them and subset. This is for pedagogical reasons, so please bare with me.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ind&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;do&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="k"&gt;call&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cbind&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="n"&gt;grepl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pattern&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;^C_pre&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;xy$sample&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="n"&gt;grepl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pattern&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;^T_pre&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;xy$sample&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ind&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="c1"&gt;#       [,1]  [,2]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="c1"&gt;# [1,]  TRUE FALSE&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="c1"&gt;# [2,] FALSE FALSE&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="c1"&gt;# [3,] FALSE  TRUE&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="c1"&gt;# [4,] FALSE FALSE&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="c1"&gt;# [5,] FALSE FALSE&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Find those rows in `xy` that have at least one TRUE and use that to subset the&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="c1"&gt;# data.frame.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;xy&lt;/span&gt;&lt;span class="err"&gt;[&lt;/span&gt;&lt;span class="n"&gt;rowSums&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ind&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="err"&gt;]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="c1"&gt;#          sample     value&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="c1"&gt;# 1 C_pre_sample1 0.3048032&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="c1"&gt;# 3 T_pre_sample2 0.3359707&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The same can be achieved using a &lt;em&gt;vectorized&lt;/em&gt; version of the &lt;code&gt;grepl&lt;/code&gt; function. We designate which argument exactly is being vectorized, in our case &lt;code&gt;pattern&lt;/code&gt; because that's the argument that is varying.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;vgrepl&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="nf"&gt;Vectorize&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;grepl&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;vectorize.args&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;pattern&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Here we use function &lt;code&gt;Vectorize&lt;/code&gt; and we tell it to vectorize argument &lt;code&gt;pattern&lt;/code&gt;. What this will do is run the &lt;code&gt;grepl&lt;/code&gt; function for any element of the vector we pass in, just like we did in the &lt;code&gt;i.ind&lt;/code&gt; objects a few lines above.&lt;/p&gt;
+&lt;p&gt;This would be an equivalent of doing it using an anonymouse function&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;tmp&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="nf"&gt;sapply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;c&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;^C_pre&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;^T_pre&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;FUN&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pt&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;input&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nf"&gt;grepl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pt&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;input&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;},&lt;/span&gt; &lt;span class="n"&gt;input&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;xy&lt;/span&gt;&lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="n"&gt;sample&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;tmp&lt;/span&gt;
+&lt;span class="c1"&gt;#      ^C_pre ^T_pre&lt;/span&gt;
+&lt;span class="c1"&gt;# [1,]   TRUE  FALSE&lt;/span&gt;
+&lt;span class="c1"&gt;# [2,]  FALSE  FALSE&lt;/span&gt;
+&lt;span class="c1"&gt;# [3,]  FALSE   TRUE&lt;/span&gt;
+&lt;span class="c1"&gt;# [4,]  FALSE  FALSE&lt;/span&gt;
+&lt;span class="c1"&gt;# [5,]  FALSE  FALSE&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;While this can be somewhat verbose, you can use &lt;code&gt;vgrepl&lt;/code&gt; as you would use &lt;code&gt;grepl&lt;/code&gt;, with the minor detail that you pass a whole vector to &lt;code&gt;pattern&lt;/code&gt; instead of a single regular expression.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;i.vec&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="nf"&gt;vgrepl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pattern&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;c&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;^C_pre&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;^T_pre&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;xy&lt;/span&gt;&lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="n"&gt;sample&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#      ^C_pre ^T_pre&lt;/span&gt;
+&lt;span class="c1"&gt;# [1,]   TRUE  FALSE&lt;/span&gt;
+&lt;span class="c1"&gt;# [2,]  FALSE  FALSE&lt;/span&gt;
+&lt;span class="c1"&gt;# [3,]  FALSE   TRUE&lt;/span&gt;
+&lt;span class="c1"&gt;# [4,]  FALSE  FALSE&lt;/span&gt;
+&lt;span class="c1"&gt;# [5,]  FALSE  FALSE&lt;/span&gt;
+
+&lt;span class="n"&gt;xy&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nf"&gt;rowSums&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i.vec&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;#          sample     value&lt;/span&gt;
+&lt;span class="c1"&gt;# 1 C_pre_sample1 0.3048032&lt;/span&gt;
+&lt;span class="c1"&gt;# 3 T_pre_sample2 0.3359707&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Roman Luštrik</dc:creator><pubDate>Wed, 17 Apr 2019 00:00:00 +0200</pubDate><guid isPermaLink="false">tag:biolitika.si,2019-04-17:/vectorizing-functions-in-r-is-easy.html</guid><category>HowTo</category><category>R</category><category>vectorization</category><category>Vectorize</category><category>regex</category><category>0dependencies</category><category>grepl</category><category>sapply</category></item></channel></rss>

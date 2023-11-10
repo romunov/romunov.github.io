@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Biolitika - pelican</title><link>https://biolitika.si/</link><description></description><lastBuildDate>Mon, 19 Mar 2018 00:00:00 +0100</lastBuildDate><item><title>How to build a static website using Pelican</title><link>https://biolitika.si/how-to-build-a-static-website-using-pelican.html</link><description>&lt;p&gt;It's fairly easy to build a static website. Static websites differ from dynamic in that they do not communicate with a database of any sorts. This makes it easier and especially cheaper to deploy to almost any setup which runs at least rudimentary serving capabilities.&lt;/p&gt;
+&lt;p&gt;There are many options for static site generation, I chose &lt;a href="http://docs.getpelican.com/en/stable/quickstart.html"&gt;Pelican&lt;/a&gt;. There is no particular adamant reason behind it, but &lt;a href="http://pelicanthemes.com/"&gt;browsing for themes&lt;/a&gt; did tilt the scales in its favor.&lt;/p&gt;
+&lt;p&gt;Workflow is basically simple. One time install is that of &lt;code&gt;Python&lt;/code&gt; (e.g. version 3.6). Once you have that, I would recommend you also get &lt;code&gt;pip install virtualenvwrapper&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;You then activate virtual environment and install all dependencies for &lt;code&gt;pelican&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# create and activate virtual environment
+mkvirtenv mystaticwebsite
+workon mystaticwebsite
+
+# installs pelican
+pip install pelican
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create your project folder&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mkdir mywebsite
+cd mywebsite
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now feel free to follow &lt;a href="http://docs.getpelican.com/en/stable/quickstart.html"&gt;instructions from &lt;code&gt;pelican-quickstart&lt;/code&gt;&lt;/a&gt; on.&lt;/p&gt;
+&lt;p&gt;Once you are done writing contents to a markdown (&lt;code&gt;.md&lt;/code&gt;) file you 'publish' your website, which puts all the bits and pieces together (applies settings, theme...) into an &lt;code&gt;/output&lt;/code&gt; folder. You can do that using &lt;code&gt;pelican content --output output --ignore-cache --relative-urls --settings publishconf.py&lt;/code&gt;. Making paths relative enables you to view your site locally without resorting to changing &lt;code&gt;SITEURL = ''&lt;/code&gt; before compiling.&lt;/p&gt;
+&lt;p&gt;To make your website ready to be published, feel free to include settings specified in the &lt;code&gt;publishconf.py&lt;/code&gt;, e.g. &lt;code&gt;pelican content --output output --ignore-cache --settings publishconf.py&lt;/code&gt;. Ignoring cache will make sure some weird bits do not get left in and Pelican starts afresh.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Roman Luštrik</dc:creator><pubDate>Mon, 19 Mar 2018 00:00:00 +0100</pubDate><guid isPermaLink="false">tag:biolitika.si,2018-03-19:/how-to-build-a-static-website-using-pelican.html</guid><category>HowTo</category><category>pelican</category></item></channel></rss>

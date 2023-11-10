@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Biolitika - login</title>
+        <link rel="stylesheet" href="https://biolitika.si/theme/css/main.css" />
+        <link href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Biolitika Atom Feed" />
+        <link href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika RSS Feed" />
+          <link href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika Tags RSS Feed" />
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://biolitika.si/">Biolitika </a></h1>
+                <nav><ul>
+                    <li><a href="https://biolitika.si/category/howto.html">HowTo</a></li>
+                    <li><a href="https://biolitika.si/category/ijz.html">IJZ</a></li>
+                    <li><a href="https://biolitika.si/category/opensource.html">OpenSource</a></li>
+                    <li><a href="https://biolitika.si/category/razmisljanja.html">Razmišljanja</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://biolitika.si/how-i-implemented-googlesignin-in-r-shiny-and-lived.html">How I implemented googleSignIn in R (shiny) and lived</a></h1>
+<footer class="post-info">
+        <span>2019-03-16</span>
+<span>| tags: <a href="https://biolitika.si/tag/r.html">R</a><a href="https://biolitika.si/tag/google.html">google</a><a href="https://biolitika.si/tag/login.html">login</a><a href="https://biolitika.si/tag/googleauthr.html">googleAuthR</a><a href="https://biolitika.si/tag/shiny.html">shiny</a><a href="https://biolitika.si/tag/oauth2.html">oauth2</a></span>
+</footer><!-- /.post-info --><p>Known user identity when building shiny apps can sometimes come really handy. While you can implement your own user login, for instance <a href="https://calligross.de/post/using-cookie-based-authentication-with-shiny/">using cookies</a>, you can also use some of the services which authenticate a user for you, such as Google. This way, you don't have to handle cookies or passwords, just a small part of bureaucracy in your database.</p>
+<p>Enter <a href="https://code.markedmondson.me/googleAuthR/">googleAuthR</a>. You can use the Google Authentication system, which enables you to call its APIs (e.g. see <a href="https://lesliemyint.wordpress.com/2017/01/01/creating-a-shiny-app-with-google-login/">here</a>), but sometimes a user login is just enough. This is where the accompanying module <code>googleSignIn</code> comes into play. Below is how I was able to implement this same name module with four lines of code, one line being loading the aforementioned library.</p>
+<p>If you would be kind enough to scroll to the <a href="https://code.markedmondson.me/googleAuthR/articles/google-authentication-types.html#googlesignin-module-example"><code>googleSignIn</code></a> part of the page, you will notice code for a shiny app that (almost) just works. Read on to see what I mean by "almost".</p>
+<p>The demo app has all the key components, it loads libraries, prepares <code>options("client_id")</code>, creates sign in button in <code>ui</code> (<code>googleSignInUI("demo")</code>), does the auth dance for you in the <code>server</code> part (<code>shiny::callModule(googleSignIn, "demo")</code>) when this button is pressed and, as gratis, displays the name, email and your google image. I run the app using <code>runApp(port = 1221)</code>!</p>
+<p><img src="https://biolitika.si/images/googlesignin_app.png" class="center"></p>
+<p>When I press the Sign in button, I get - bleh. Doesn't work.</p>
+<p><img src="https://biolitika.si/images/googlesingin_invalid_request.png" class="center"></p>
+<p>What is going on? The google console parameters check out.</p>
+<p><img src="https://biolitika.si/images/googlesingin_console_restrictions.png" class="center"></p>
+<p>Let me save you hours of clicking by pointing out this little bit from the documentation from the <a href="https://code.markedmondson.me/googleAuthR/articles/google-authentication-types.html#googleauth-module-example"><code>googleAuth</code> module</a>:</p>
+<blockquote>
+<p>... then make sure if you launch your app locally to change the ip address from <code>127.0.0.1</code> to <code>localhost</code> in your browser (Google doesn’t accept ip addresses).</p>
+</blockquote>
+<p>In other words, in your web browser, just change <code>http://127.0.0.1:1221</code> to <code>http://localhost:1221</code>. The page should reload on its own. Click the sign in button et voilà.</p>
+<p><img src="https://biolitika.si/images/googlesignin_signedin.png" class="center"></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>1995 style links</h2>
+                        <ul>
+                            <li><a href="https://stackoverflow.com/users/322912/roman-lu%C5%A1trik">visit me on StackOverFlow</a></li>
+                            <li><a href="http://metinalista.si/category/metamorfoza">#metamorfoza podcast (SI)</a></li>
+                            <li><a href="https://www.r-bloggers.com">r-bloggers</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">RSS feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate">Tag RSS feed</a></li>
+
+                            <li><a href="https://github.com/romunov">GitHub</a></li>
+                            <li><a href="https://twitter.com/romunov">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/roman-lu%C5%A1trik-5a6586ab">LinkedIn</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-22752654-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

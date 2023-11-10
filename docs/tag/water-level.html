@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Biolitika - water level</title>
+        <link rel="stylesheet" href="https://biolitika.si/theme/css/main.css" />
+        <link href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Biolitika Atom Feed" />
+        <link href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika RSS Feed" />
+          <link href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika Tags RSS Feed" />
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://biolitika.si/">Biolitika </a></h1>
+                <nav><ul>
+                    <li><a href="https://biolitika.si/category/howto.html">HowTo</a></li>
+                    <li><a href="https://biolitika.si/category/ijz.html">IJZ</a></li>
+                    <li><a href="https://biolitika.si/category/opensource.html">OpenSource</a></li>
+                    <li><a href="https://biolitika.si/category/razmisljanja.html">Razmišljanja</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://biolitika.si/water-well-drying-rate.html">Water well outflow rate</a></h1>
+<footer class="post-info">
+        <span>2021-05-15</span>
+<span>| tags: <a href="https://biolitika.si/tag/well.html">well</a><a href="https://biolitika.si/tag/drying.html">drying</a><a href="https://biolitika.si/tag/water-level.html">water level</a><a href="https://biolitika.si/tag/rainfall.html">rainfall</a><a href="https://biolitika.si/tag/linear-model.html">linear model</a><a href="https://biolitika.si/tag/statistics.html">statistics</a><a href="https://biolitika.si/tag/r.html">R</a></span>
+</footer><!-- /.post-info --><p>The house I live in has been built around 1939 and is accompanied by a water well that is about 6 m deep. This was dug out by hand, 0.5 m a day, added scaffolding, added concrete and so on for a few weeks. I think, but see the below figure where on the right side you can see the jagged ledges that would explain this hypothesis.</p>
+<p>In the past (think 1990), this well has been the only source of water for the house, but ever since we've been connected to a public water source, it's been there mostly for show.</p>
+<p><center>
+<img src="./images/water_well.jpg" align="middle">
+</center></p>
+<p>Soon we'll be rebuilding the house and rainfall from the roof will have to go somewhere. One of the options is to use this well to siphon the water into. It would be a great feature if the water would flow out of the well so as not to overflow.</p>
+<p>In the first week of this May, there was a large rainfall and water level was about 220 cm above the top edge of the well (about 1 m under the surface). This was the ideal opportunity for me to measure how fast the water will go down. Using a tape measure, I measured the distance from the top of the well to the water level with about 5 cm accuracy. It's hard to measure precisely because I could only approximately see when the measurer hit the water level. I noted date and time and wrote it down into a Google Spreadsheet table.</p>
+<p>To calculate the rate, I created a (generalized) linear model where I would model water level height as a function of time (seconds). In R parlance, that would be <code>glm(water_level_height ~ time)</code>. Summary of the model is</p>
+<div class="highlight"><pre><span></span><code><span class="c1">##</span>
+<span class="c1">## Call:</span>
+<span class="c1">## glm(formula = razdalja_cm ~ date_time, data = xy)</span>
+<span class="c1">##</span>
+<span class="c1">## Deviance Residuals:</span>
+<span class="c1">##     Min       1Q   Median       3Q      Max  </span>
+<span class="c1">## -12.257   -3.863   -1.472    4.954   13.578  </span>
+<span class="c1">##</span>
+<span class="c1">## Coefficients:</span>
+<span class="c1">##                     Estimate       Std. Error t value      Pr(&gt;|t|)    </span>
+<span class="c1">## (Intercept) -619585.78740010   22316.13758332  -27.76 0.00000000306 ***</span>
+<span class="c1">## date_time         0.00038248       0.00001377   27.78 0.00000000304 ***</span>
+<span class="c1">## ---</span>
+<span class="c1">## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span>
+<span class="c1">##</span>
+<span class="c1">## (Dispersion parameter for gaussian family taken to be 61.77171)</span>
+<span class="c1">##</span>
+<span class="c1">##     Null deviance: 48160.00  on 9  degrees of freedom</span>
+<span class="c1">## Residual deviance:   494.17  on 8  degrees of freedom</span>
+<span class="c1">## AIC: 73.382</span>
+<span class="c1">##</span>
+<span class="c1">## Number of Fisher Scoring iterations: 2</span>
+</code></pre></div>
+
+
+<p>If you look at the <code>date_time</code> coefficient, it says that the water level changes 0.00038 cm per second. That makes it about 33 cm a day. The measurements were taken in the span of 6.68 days, so the total lowering of the water level was about 221 cm (calculated backwards from the model). Which is approximately what I measured, starting at 220 cm and ending at 430 cm below water well edge.</p>
+<p>To put this into liters, given the diameter of 100 cm, that translates to outflow of 230 L of water per day.</p>
+<p><img alt="Actual and modeled well drying rate" src="./images/well_drying_rate.png"></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>1995 style links</h2>
+                        <ul>
+                            <li><a href="https://stackoverflow.com/users/322912/roman-lu%C5%A1trik">visit me on StackOverFlow</a></li>
+                            <li><a href="http://metinalista.si/category/metamorfoza">#metamorfoza podcast (SI)</a></li>
+                            <li><a href="https://www.r-bloggers.com">r-bloggers</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">RSS feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate">Tag RSS feed</a></li>
+
+                            <li><a href="https://github.com/romunov">GitHub</a></li>
+                            <li><a href="https://twitter.com/romunov">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/roman-lu%C5%A1trik-5a6586ab">LinkedIn</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-22752654-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

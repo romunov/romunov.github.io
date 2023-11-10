@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Biolitika - python</title>
+        <link rel="stylesheet" href="https://biolitika.si/theme/css/main.css" />
+        <link href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Biolitika Atom Feed" />
+        <link href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika RSS Feed" />
+          <link href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika Tags RSS Feed" />
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://biolitika.si/">Biolitika </a></h1>
+                <nav><ul>
+                    <li><a href="https://biolitika.si/category/howto.html">HowTo</a></li>
+                    <li><a href="https://biolitika.si/category/ijz.html">IJZ</a></li>
+                    <li><a href="https://biolitika.si/category/opensource.html">OpenSource</a></li>
+                    <li><a href="https://biolitika.si/category/razmisljanja.html">Razmišljanja</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://biolitika.si/lintering-using-tox-ignores-python-version.html">Lintering using tox ignores Python version</a></h1>
+<footer class="post-info">
+        <span>2023-11-10</span>
+<span>| tags: <a href="https://biolitika.si/tag/python.html">python</a><a href="https://biolitika.si/tag/tox.html">tox</a><a href="https://biolitika.si/tag/lintering.html">lintering</a><a href="https://biolitika.si/tag/fedora.html">fedora</a><a href="https://biolitika.si/tag/venv.html">venv</a></span>
+</footer><!-- /.post-info --><p>When trying to run linters using <code>tox</code>, it would keep use Python 3.11 to run. But this isn't what's defined in my project configuration that says it should be Python versions between and including 3.8 and 3.10 nor the version used in my virtual environment.</p>
+<div class="highlight"><pre><span></span><code><span class="err">➜</span> <span class="n">tox</span> <span class="o">-</span><span class="n">e</span> <span class="n">linters</span>
+<span class="o">...</span>
+<span class="n">Processing</span> <span class="o">./.</span><span class="n">tox</span><span class="o">/.</span><span class="n">tmp</span><span class="o">/....</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+  <span class="n">Installing</span> <span class="n">build</span> <span class="n">dependencies</span> <span class="o">...</span> <span class="n">done</span>
+  <span class="n">Getting</span> <span class="n">requirements</span> <span class="n">to</span> <span class="n">build</span> <span class="n">wheel</span> <span class="o">...</span> <span class="n">done</span>
+  <span class="n">Installing</span> <span class="n">backend</span> <span class="n">dependencies</span> <span class="o">...</span> <span class="n">done</span>
+  <span class="n">Preparing</span> <span class="n">metadata</span> <span class="p">(</span><span class="n">pyproject</span><span class="o">.</span><span class="n">toml</span><span class="p">)</span> <span class="o">...</span> <span class="n">done</span>
+
+<span class="n">ERROR</span><span class="p">:</span> <span class="n">Package</span> <span class="s1">&#39;mypackage&#39;</span> <span class="n">requires</span> <span class="n">a</span> <span class="n">different</span> <span class="n">Python</span><span class="p">:</span> <span class="mf">3.11.6</span> <span class="ow">not</span> <span class="ow">in</span> <span class="s1">&#39;&lt;3.11,&gt;=3.8&#39;</span>
+</code></pre></div>
+
+
+<p>The specific configuration (<code>tox.ini</code>, <code>setup.cfg</code> and <code>pyproject.toml</code>) worked for others and testing server, but not for me, so I started poking around my system. The first clue was when I checked <code>tox --version</code> which said 4.11, BUT, it was from folder <code>.../python3.11/site-packages</code>. When I tried to remove the global version using <code>pip uninstall tox</code>, pip complained that this isn't possible because the package might have been installed using the system's package manager. Sure enough, after <code>sudo dnf remove tox</code> and installation of <code>tox</code> in the local environment, lintering now goes through.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://biolitika.si/remember-processed-entities-in-python.html" rel="bookmark"
+                           title="Permalink to Remember processed entities in Python">Remember processed entities in Python</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>2021-09-04</span>
+<span>| tags: <a href="https://biolitika.si/tag/persistent-storage.html">persistent storage</a><a href="https://biolitika.si/tag/shelf.html">shelf</a><a href="https://biolitika.si/tag/shelve.html">shelve</a><a href="https://biolitika.si/tag/python.html">Python</a></span>
+</footer><!-- /.post-info -->                <p>An off-the-shelf way to remember which entities have been processed which enables you to flow your workflow in a more intelligent manner.</p>
+                <a class="readmore" href="https://biolitika.si/remember-processed-entities-in-python.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://biolitika.si/inspekcijski-postopki-elementi-delovnega-razmerja.html" rel="bookmark"
+                           title="Permalink to Odkrivanje elementov delovnega razmerja s strani Inšpektorata RS za delo">Odkrivanje elementov delovnega razmerja s strani Inšpektorata RS za delo</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>2020-05-23</span>
+<span>| tags: <a href="https://biolitika.si/tag/ijz.html">ijz</a><a href="https://biolitika.si/tag/python.html">Python</a><a href="https://biolitika.si/tag/ocr.html">OCR</a><a href="https://biolitika.si/tag/tesseract.html">tesseract</a><a href="https://biolitika.si/tag/pypdfocr.html">pypdfocr</a></span>
+</footer><!-- /.post-info -->                <!-- https://docs.getpelican.com/en/stable/content.html -->
+
+<p>Na Inšpektoratu RS za delo so bili tako prijazni, da so mi poslali stiskano in poskenirano tabelo zaključnenih dokumentov inšpekcijskih nadzorov, ki se tičejo ugotavljanja elementov delovnega razmerja kot jih opredeljuje <a href="http://pisrs.si/Pis.web/pregledPredpisa?id=ZAKO5944#">ZDR-1</a>. Po domače povedano so inšpektorji in inšpektorice pri delodajalcih preverjali, če ima podjetje delavce zaposlene "prek s.p …</p>
+                <a class="readmore" href="https://biolitika.si/inspekcijski-postopki-elementi-delovnega-razmerja.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://biolitika.si/docker-image-of-obitools-available.html" rel="bookmark"
+                           title="Permalink to Docker image for OBITools (1.2.13) available">Docker image for OBITools (1.2.13) available</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>2019-06-15</span>
+<span>| tags: <a href="https://biolitika.si/tag/python.html">python</a><a href="https://biolitika.si/tag/bioinformatics.html">bioinformatics</a><a href="https://biolitika.si/tag/docker.html">docker</a><a href="https://biolitika.si/tag/obitools.html">obitools</a><a href="https://biolitika.si/tag/dockerhub.html">dockerhub</a></span>
+</footer><!-- /.post-info -->                <p>Docker image for OBITools available</p>
+                <a class="readmore" href="https://biolitika.si/docker-image-of-obitools-available.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>1995 style links</h2>
+                        <ul>
+                            <li><a href="https://stackoverflow.com/users/322912/roman-lu%C5%A1trik">visit me on StackOverFlow</a></li>
+                            <li><a href="http://metinalista.si/category/metamorfoza">#metamorfoza podcast (SI)</a></li>
+                            <li><a href="https://www.r-bloggers.com">r-bloggers</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">RSS feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate">Tag RSS feed</a></li>
+
+                            <li><a href="https://github.com/romunov">GitHub</a></li>
+                            <li><a href="https://twitter.com/romunov">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/roman-lu%C5%A1trik-5a6586ab">LinkedIn</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-22752654-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

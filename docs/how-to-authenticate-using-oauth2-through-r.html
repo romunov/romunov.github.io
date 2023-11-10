@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>How to authenticate using OAuth2 through R</title>
+        <link rel="stylesheet" href="https://biolitika.si/theme/css/main.css" />
+        <link href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Biolitika Atom Feed" />
+        <link href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika RSS Feed" />
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://biolitika.si/">Biolitika </a></h1>
+                <nav><ul>
+                    <li class="active"><a href="https://biolitika.si/category/howto.html">HowTo</a></li>
+                    <li><a href="https://biolitika.si/category/ijz.html">IJZ</a></li>
+                    <li><a href="https://biolitika.si/category/opensource.html">OpenSource</a></li>
+                    <li><a href="https://biolitika.si/category/razmisljanja.html">Razmišljanja</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="https://biolitika.si/how-to-authenticate-using-oauth2-through-r.html" rel="bookmark"
+           title="Permalink to How to authenticate using OAuth2 through R">How to authenticate using OAuth2 through R</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>2019-01-20</span>
+<span>| tags: <a href="https://biolitika.si/tag/r.html">R</a><a href="https://biolitika.si/tag/oauth2.html">oauth2</a><a href="https://biolitika.si/tag/httr.html">httr</a><a href="https://biolitika.si/tag/curl.html">curl</a><a href="https://biolitika.si/tag/api.html">API</a><a href="https://biolitika.si/tag/token.html">token</a><a href="https://biolitika.si/tag/scope.html">scope</a></span>
+</footer><!-- /.post-info -->      <p>If you need to have authentication of users in your application, you could invent the proverbial warm water by implementing register, login, logout and other features. Or, you could outsource part of that functionality to well established establishments such as Google, Facebook, Github and other. In addition to knowing the identity of your user, you can potentially gain access to service's APIs, which can be very handy (such as access to users' calendars, e-mail boxes, etc...).</p>
+<p>In this post, you will learn how to set up authentication using OAuth2 using google, but the process is similar(ly painful) for other services.</p>
+<p>If you do not know how OAuth2 works, you may want to check out the figures <a href="https://www.joyofdata.de/blog/oauth2-google-api-python-google-analytics/">here</a> and <a href="https://developers.google.com/identity/protocols/OAuth2">here</a>. Basically it works by sending your user (pops up a website) to a service (e.g. Google), where they confirm access to their data (scope). On return, they will bring with them a "code". This code is then traded in by you at the service desk for a token, which acts as a pass to see particular user's data. Store this somewhere safe.</p>
+<p>To accomplish this, R package <a href="https://github.com/r-lib/httr"><code>httr</code></a> comes equipped with all the lingo needed to successfully talk to services. There are some good demos in package <a href="https://github.com/r-lib/httr/blob/master/demo">source code</a>, however, it perhaps lacks some minor details. This post will perhaps shine some light on those details, but who knows how long the screenshots will be relevant. Hopefully at least ideas will be evergreen for the foreseeable future.</p>
+<p>If you haven't done so yet, head over to the <a href="">google developers' console</a> and create a new project. In the Credentials menu, create new OAuth client ID credentials.</p>
+<p><img src="https://biolitika.si/images/create_client_id.png" width="760"></p>
+<p>Select Web application and fill out application name and Authorized redirect URIs. This is the URI where user will be diverted to once the authentication has been confirmed. For testing purposes, make sure this is <code>http://localhost/</code> (notice the trailing slash). Once deployed, the URI here would be sent back to your application's address.
+You can fetch <code>secret</code> and <code>key</code> from the Client ID for Web application menu, depicted as black stripes on the figure below.</p>
+<p><img src="https://biolitika.si/images/client_secret.png" width="760"></p>
+<p>Make sure you visit the OAuth consent screen tab and fill in any necessary information needed for transparent functioning of your application.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Below are mock secret and key, they will not work. They are just an example of what they</span>
+<span class="c1">#  would look like. Replace with your.</span>
+<span class="n">secret</span> <span class="o">&lt;-</span> <span class="s">&quot;vxR9AuyJ4cEwrPNaylaTyC3AfXWIEdQnFotju9Yc6Q4og.apps.googleusercontent.com</span>
+<span class="s">key &lt;- &quot;</span><span class="n">afL4IguOXCXC6</span><span class="o">-</span><span class="n">bPV9lObvxT</span><span class="s">&quot;</span>
+</code></pre></div>
+
+
+<p>We send the user to choose which account to authenticate with (a new window pops open) and then are returned a token. This token is then used to request any information needed by your app and authorized by the user. To read more on Google scopes, read <a href="https://developers.google.com/identity/protocols/googlescopes">here</a>.</p>
+<p>This is an example of scope for OAuth2 API.
+<img src="https://biolitika.si/images/google_scopes.png" width="760"></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Ask user to authorize access to his or her data and gain a token.</span><span class="w"></span>
+<span class="n">auth</span><span class="p">.</span><span class="k">code</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">oauth2</span><span class="mf">.0</span><span class="n">_token</span><span class="p">(</span><span class="n">endpoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">oauth_endpoints</span><span class="p">(</span><span class="s2">&quot;google&quot;</span><span class="p">),</span><span class="w"></span>
+<span class="w">                            </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">,</span><span class="w"></span>
+<span class="w">                            </span><span class="n">scope</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://www.googleapis.com/auth/userinfo.profile&quot;</span><span class="p">)</span><span class="w"></span>
+
+<span class="c1"># Use token to fetch the actual data.</span><span class="w"></span>
+<span class="n">req</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">GET</span><span class="p">(</span><span class="s2">&quot;https://www.googleapis.com/oauth2/v1/userinfo&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">           </span><span class="n">config</span><span class="p">(</span><span class="n">token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">auth</span><span class="p">.</span><span class="k">code</span><span class="p">))</span><span class="w"></span>
+
+<span class="c1"># This step is needed so that if the call fails, you will be</span><span class="w"></span>
+<span class="c1">#  able to detect it and handle it R-way. You are best off wrapping this into</span><span class="w"></span>
+<span class="c1">#  a `tryCatch` call if not in interactive session.</span><span class="w"></span>
+<span class="n">stop_for_status</span><span class="p">(</span><span class="n">req</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>The result would look something along these lines.</p>
+<div class="highlight"><pre><span></span><code># <span class="nv">I</span> <span class="nv">changed</span> <span class="nv">sensitive</span> <span class="nv">information</span> <span class="k">for</span> <span class="nv">this</span> <span class="nv">display</span>, <span class="nv">so</span> <span class="nv">don</span><span class="s1">&#39;</span><span class="s">t bother. :)</span>
+<span class="o">&gt;</span> <span class="nv">str</span><span class="ss">(</span><span class="nv">content</span><span class="ss">(</span><span class="nv">req</span><span class="ss">))</span>
+<span class="nv">List</span> <span class="nv">of</span> <span class="mi">8</span>
+ $ <span class="nv">id</span>         : <span class="nv">chr</span> <span class="s2">&quot;</span><span class="s">754846239037474839489</span><span class="s2">&quot;</span>
+ $ <span class="nv">name</span>       : <span class="nv">chr</span> <span class="s2">&quot;</span><span class="s">Roman Luštrik</span><span class="s2">&quot;</span>
+ $ <span class="nv">given_name</span> : <span class="nv">chr</span> <span class="s2">&quot;</span><span class="s">Roman</span><span class="s2">&quot;</span>
+ $ <span class="nv">family_name</span>: <span class="nv">chr</span> <span class="s2">&quot;</span><span class="s">Luštrik</span><span class="s2">&quot;</span>
+ $ <span class="nv">link</span>       : <span class="nv">chr</span> <span class="s2">&quot;</span><span class="s">https://plus.google.com/754846239037474839489</span><span class="s2">&quot;</span>
+ $ <span class="nv">picture</span>    : <span class="nv">chr</span> <span class="s2">&quot;</span><span class="s">https://lh500600.googleusercontent.com/-32gefACRE/ACCAXSDFCASC/XAAXEXF/asdCac_/photo.jpg</span><span class="s2">&quot;</span>
+ $ <span class="nv">gender</span>     : <span class="nv">chr</span> <span class="s2">&quot;</span><span class="s">other</span><span class="s2">&quot;</span>
+ $ <span class="nv">locale</span>     : <span class="nv">chr</span> <span class="s2">&quot;</span><span class="s">en</span><span class="s2">&quot;</span>
+</code></pre></div>
+
+
+<p>If you would also like to fetch user's e-mail address, you will need to extend the scope. Note that the query has changed and you will be, once again, asked to confirm that you allow your e-mail address be accessed by the app.</p>
+<div class="highlight"><pre><span></span><code><span class="n">auth.code</span> <span class="o">&lt;-</span> <span class="nf">oauth2.0_token</span><span class="p">(</span><span class="n">endpoint</span> <span class="o">=</span> <span class="nf">oauth_endpoints</span><span class="p">(</span><span class="s">&quot;google&quot;</span><span class="p">),</span>
+                            <span class="n">app</span> <span class="o">=</span> <span class="n">app</span><span class="p">,</span>
+                            <span class="n">scope</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;https://www.googleapis.com/auth/userinfo.profile&quot;</span><span class="p">,</span>
+                                      <span class="s">&quot;https://www.googleapis.com/auth/userinfo.email&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">req</span> <span class="o">&lt;-</span> <span class="nf">GET</span><span class="p">(</span><span class="s">&quot;https://www.googleapis.com/oauth2/v1/userinfo&quot;</span><span class="p">,</span>
+           <span class="nf">config</span><span class="p">(</span><span class="n">token</span> <span class="o">=</span> <span class="n">auth.code</span><span class="p">))</span>
+
+<span class="nf">stop_for_status</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+<span class="nf">str</span><span class="p">(</span><span class="nf">content</span><span class="p">(</span><span class="n">req</span><span class="p">))</span>
+
+<span class="n">List</span> <span class="n">of</span> <span class="m">10</span>
+ <span class="o">$</span> <span class="n">id</span>           <span class="o">:</span> <span class="n">chr</span> <span class="s">&quot;754846239037474839489&quot;</span>
+<span class="o">$</span> <span class="n">email</span>         <span class="o">:</span> <span class="n">chr</span> <span class="s">&quot;name@gmail.com&quot;</span>
+<span class="o">$</span> <span class="n">verified_email</span><span class="o">:</span> <span class="n">logi</span> <span class="kc">TRUE</span>
+<span class="o">$</span> <span class="n">name</span>          <span class="o">:</span> <span class="n">chr</span> <span class="s">&quot;Roman Luštrik&quot;</span>
+<span class="o">$</span> <span class="n">given_name</span>    <span class="o">:</span> <span class="n">chr</span> <span class="s">&quot;Roman&quot;</span>
+<span class="o">$</span> <span class="n">family_name</span>   <span class="o">:</span> <span class="n">chr</span> <span class="s">&quot;Luštrik&quot;</span>
+<span class="o">$</span> <span class="n">link</span>          <span class="o">:</span> <span class="n">chr</span> <span class="s">&quot;https://plus.google.com/754846239037474839489&quot;</span>
+<span class="o">$</span> <span class="n">picture</span>       <span class="o">:</span> <span class="n">chr</span> <span class="s">&quot;https://lh500600.googleusercontent.com/-32gefACRE/ACCAXSDFCASC/XAAXEXF</span>
+<span class="s">$ gender        : chr &quot;</span><span class="n">other</span><span class="s">&quot;</span>
+<span class="s">$ locale        : chr &quot;</span><span class="n">en</span><span class="s">&quot;</span>
+</code></pre></div>
+
+
+<h4>Error log</h4>
+<p>Restarting my R session, updating <code>httr</code> and making sure that the redirect URI was set to <code>http://localhost/</code> solved my problem with this error below.</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">ggl.token</span> <span class="o">&lt;-</span> <span class="nf">oauth2.0_token</span><span class="p">(</span><span class="n">endpoint</span> <span class="o">=</span> <span class="nf">oauth_endpoints</span><span class="p">(</span><span class="s">&quot;google&quot;</span><span class="p">),</span>
+<span class="o">+</span>                             <span class="n">app</span> <span class="o">=</span> <span class="n">app</span><span class="p">,</span>
+<span class="o">+</span>                             <span class="n">scope</span> <span class="o">=</span> <span class="s">&quot;https://www.googleapis.com/auth/userinfo.profile&quot;</span><span class="p">)</span>
+<span class="n">Waiting</span> <span class="n">for</span> <span class="n">authentication</span> <span class="n">in</span> <span class="n">browser...</span>
+<span class="n">Press</span> <span class="n">Esc</span><span class="o">/</span><span class="n">Ctrl</span> <span class="o">+</span> <span class="n">C</span> <span class="n">to</span> <span class="n">abort</span>
+<span class="n">Authentication</span> <span class="n">complete.</span>
+<span class="n">Error</span> <span class="n">in</span> <span class="n">curl</span><span class="o">::</span><span class="nf">curl_fetch_memory</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">handle</span> <span class="o">=</span> <span class="n">handle</span><span class="p">)</span> <span class="o">:</span>
+  <span class="n">Could</span> <span class="n">not</span> <span class="n">resolve</span> <span class="n">host</span><span class="o">:</span> <span class="n">accounts.google.com</span>
+</code></pre></div>
+
+
+<p>I came to the idea of restarting my R session when surefire stuff didn't work, such as updating R package(s) using <code>devtools::install_github</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;</span><span class="w"> </span><span class="n">devtools</span><span class="p">::</span><span class="n">install_github</span><span class="p">(</span><span class="s2">&quot;r-lib/httr&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="n">Installation</span><span class="w"> </span><span class="n">failed</span><span class="p">:</span><span class="w"> </span><span class="n">curl</span><span class="p">::</span><span class="n">curl_fetch_disk</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">$</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">handle</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Could</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">resolve</span><span class="w"> </span><span class="n">host</span><span class="p">:</span><span class="w"> </span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="w"></span>
+</code></pre></div>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>1995 style links</h2>
+                        <ul>
+                            <li><a href="https://stackoverflow.com/users/322912/roman-lu%C5%A1trik">visit me on StackOverFlow</a></li>
+                            <li><a href="http://metinalista.si/category/metamorfoza">#metamorfoza podcast (SI)</a></li>
+                            <li><a href="https://www.r-bloggers.com">r-bloggers</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">RSS feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate">Tag RSS feed</a></li>
+
+                            <li><a href="https://github.com/romunov">GitHub</a></li>
+                            <li><a href="https://twitter.com/romunov">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/roman-lu%C5%A1trik-5a6586ab">LinkedIn</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-22752654-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

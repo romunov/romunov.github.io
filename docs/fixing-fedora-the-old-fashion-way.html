@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Fixing Fedora the old fashion way</title>
+        <link rel="stylesheet" href="https://biolitika.si/theme/css/main.css" />
+        <link href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Biolitika Atom Feed" />
+        <link href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika RSS Feed" />
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://biolitika.si/">Biolitika </a></h1>
+                <nav><ul>
+                    <li class="active"><a href="https://biolitika.si/category/howto.html">HowTo</a></li>
+                    <li><a href="https://biolitika.si/category/ijz.html">IJZ</a></li>
+                    <li><a href="https://biolitika.si/category/opensource.html">OpenSource</a></li>
+                    <li><a href="https://biolitika.si/category/razmisljanja.html">Razmišljanja</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="https://biolitika.si/fixing-fedora-the-old-fashion-way.html" rel="bookmark"
+           title="Permalink to Fixing Fedora the old fashion way">Fixing Fedora the old fashion way</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>2022-05-02</span>
+<span>| tags: <a href="https://biolitika.si/tag/fedora.html">fedora</a><a href="https://biolitika.si/tag/linux.html">linux</a></span>
+</footer><!-- /.post-info -->      <p>My regular maintenance of my Fedora instance includes doing incessant upgrading using</p>
+<div class="highlight"><pre><span></span><code>sudo dnf upgrade
+</code></pre></div>
+
+
+<p>which updates any possible packages and the kernel. This has worked fine until recently,
+when two of my computers started freezing during the upgrading process. Usually,
+I would wait about 10 minutes before hard shutting down the computer and powering back up
+without any obvious detremental effects.</p>
+<p>But a few days ago, I cycled the computer after a freeze after about a minute. When trying
+to powering back up, I was welcomed by the emergency mode saying</p>
+<div class="highlight"><pre><span></span><code>Cannot open access to console, the root account is locked.
+See sulogin<span class="o">(</span><span class="m">8</span><span class="o">)</span> man page <span class="k">for</span> more details.
+
+Press Enter to <span class="k">continue</span>.
+</code></pre></div>
+
+
+<p>Needless to say, anything I tried to do at this stage would not bear any fruit, resulting
+in a lot of <code>FAILED</code> messages, from failure to mount <code>/boot/efi</code> to <code>Failed to start Load Kernel Module</code>.</p>
+<p>The problem was resolved by booting into a live USB Fedora and installing a fresh install.
+The only thing to watch for is to not reformat the <code>/home</code> folder. After the system was up and running,
+I was welcommd by having all my setting being retained, i.e. all Firefox windows were as I left them before
+the crash. When I installed Slack, all channels were loaded without going through the tedious
+logging in using two-factor authentication. PyCharm also kept all the sweet settings I set.</p>
+<p>The key to fixing the computer is just pouring copious quantities of your favorite wine. And having
+a backup computer also helps.</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>1995 style links</h2>
+                        <ul>
+                            <li><a href="https://stackoverflow.com/users/322912/roman-lu%C5%A1trik">visit me on StackOverFlow</a></li>
+                            <li><a href="http://metinalista.si/category/metamorfoza">#metamorfoza podcast (SI)</a></li>
+                            <li><a href="https://www.r-bloggers.com">r-bloggers</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">RSS feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate">Tag RSS feed</a></li>
+
+                            <li><a href="https://github.com/romunov">GitHub</a></li>
+                            <li><a href="https://twitter.com/romunov">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/roman-lu%C5%A1trik-5a6586ab">LinkedIn</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-22752654-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

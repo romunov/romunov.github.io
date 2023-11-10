@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Biolitika - well</title><link>https://biolitika.si/</link><description></description><lastBuildDate>Sat, 15 May 2021 08:50:00 +0200</lastBuildDate><item><title>Water well outflow rate</title><link>https://biolitika.si/water-well-drying-rate.html</link><description>&lt;p&gt;The house I live in has been built around 1939 and is accompanied by a water well that is about 6 m deep. This was dug out by hand, 0.5 m a day, added scaffolding, added concrete and so on for a few weeks. I think, but see the below figure where on the right side you can see the jagged ledges that would explain this hypothesis.&lt;/p&gt;
+&lt;p&gt;In the past (think 1990), this well has been the only source of water for the house, but ever since we've been connected to a public water source, it's been there mostly for show.&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;
+&lt;img src="./images/water_well.jpg" align="middle"&gt;
+&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;Soon we'll be rebuilding the house and rainfall from the roof will have to go somewhere. One of the options is to use this well to siphon the water into. It would be a great feature if the water would flow out of the well so as not to overflow.&lt;/p&gt;
+&lt;p&gt;In the first week of this May, there was a large rainfall and water level was about 220 cm above the top edge of the well (about 1 m under the surface). This was the ideal opportunity for me to measure how fast the water will go down. Using a tape measure, I measured the distance from the top of the well to the water level with about 5 cm accuracy. It's hard to measure precisely because I could only approximately see when the measurer hit the water level. I noted date and time and wrote it down into a Google Spreadsheet table.&lt;/p&gt;
+&lt;p&gt;To calculate the rate, I created a (generalized) linear model where I would model water level height as a function of time (seconds). In R parlance, that would be &lt;code&gt;glm(water_level_height ~ time)&lt;/code&gt;. Summary of the model is&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;##&lt;/span&gt;
+&lt;span class="c1"&gt;## Call:&lt;/span&gt;
+&lt;span class="c1"&gt;## glm(formula = razdalja_cm ~ date_time, data = xy)&lt;/span&gt;
+&lt;span class="c1"&gt;##&lt;/span&gt;
+&lt;span class="c1"&gt;## Deviance Residuals:&lt;/span&gt;
+&lt;span class="c1"&gt;##     Min       1Q   Median       3Q      Max  &lt;/span&gt;
+&lt;span class="c1"&gt;## -12.257   -3.863   -1.472    4.954   13.578  &lt;/span&gt;
+&lt;span class="c1"&gt;##&lt;/span&gt;
+&lt;span class="c1"&gt;## Coefficients:&lt;/span&gt;
+&lt;span class="c1"&gt;##                     Estimate       Std. Error t value      Pr(&amp;gt;|t|)    &lt;/span&gt;
+&lt;span class="c1"&gt;## (Intercept) -619585.78740010   22316.13758332  -27.76 0.00000000306 ***&lt;/span&gt;
+&lt;span class="c1"&gt;## date_time         0.00038248       0.00001377   27.78 0.00000000304 ***&lt;/span&gt;
+&lt;span class="c1"&gt;## ---&lt;/span&gt;
+&lt;span class="c1"&gt;## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1&lt;/span&gt;
+&lt;span class="c1"&gt;##&lt;/span&gt;
+&lt;span class="c1"&gt;## (Dispersion parameter for gaussian family taken to be 61.77171)&lt;/span&gt;
+&lt;span class="c1"&gt;##&lt;/span&gt;
+&lt;span class="c1"&gt;##     Null deviance: 48160.00  on 9  degrees of freedom&lt;/span&gt;
+&lt;span class="c1"&gt;## Residual deviance:   494.17  on 8  degrees of freedom&lt;/span&gt;
+&lt;span class="c1"&gt;## AIC: 73.382&lt;/span&gt;
+&lt;span class="c1"&gt;##&lt;/span&gt;
+&lt;span class="c1"&gt;## Number of Fisher Scoring iterations: 2&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If you look at the &lt;code&gt;date_time&lt;/code&gt; coefficient, it says that the water level changes 0.00038 cm per second. That makes it about 33 cm a day. The measurements were taken in the span of 6.68 days, so the total lowering of the water level was about 221 cm (calculated backwards from the model). Which is approximately what I measured, starting at 220 cm and ending at 430 cm below water well edge.&lt;/p&gt;
+&lt;p&gt;To put this into liters, given the diameter of 100 cm, that translates to outflow of 230 L of water per day.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Actual and modeled well drying rate" src="./images/well_drying_rate.png"&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Roman Luštrik</dc:creator><pubDate>Sat, 15 May 2021 08:50:00 +0200</pubDate><guid isPermaLink="false">tag:biolitika.si,2021-05-15:/water-well-drying-rate.html</guid><category>HowTo</category><category>well</category><category>drying</category><category>water level</category><category>rainfall</category><category>linear model</category><category>statistics</category><category>R</category></item></channel></rss>

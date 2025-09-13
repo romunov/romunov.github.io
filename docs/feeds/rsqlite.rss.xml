@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Biolitika - RSQLite</title><link>https://biolitika.si/</link><description></description><lastBuildDate>Sat, 22 May 2021 08:53:00 +0200</lastBuildDate><item><title>Problem compiling RSQLite from source</title><link>https://biolitika.si/problem-compiling-rsqlite-from-source.html</link><description>&lt;p&gt;When I tried to compile RSQLite from source on Fedora 34, I was awaited by this error message.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Error installing package &lt;span class="s1"&gt;&amp;#39;RSQLite&amp;#39;&lt;/span&gt;:
+&lt;span class="o"&gt;===================================&lt;/span&gt;
+* installing to library ‘/.../renv/staging/1’
+* installing *source* package ‘RSQLite’ ...
+** package ‘RSQLite’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+g++ -m64 -std&lt;span class="o"&gt;=&lt;/span&gt;gnu++11 -I&lt;span class="s2"&gt;&amp;quot;/usr/include/R&amp;quot;&lt;/span&gt; -DNDEBUG -I. -Ivendor
+-DRSQLITE_USE_BUNDLED_SQLITE -DSQLITE_ENABLE_RTREE
+-DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_FTS3_PARENTHESIS -DSQLITE_ENABLE_FTS5
+-DSQLITE_ENABLE_JSON1 -DSQLITE_ENABLE_STAT4 -DSQLITE_SOUNDEX
+-DRCPP_DEFAULT_INCLUDE_CALL&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt; -DRCPP_USING_UTF8_ERROR_STRING
+-DBOOST_NO_AUTO_PTR -DSQLITE_MAX_LENGTH&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;2147483647&lt;/span&gt; -DHAVE_USLEEP&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+-I&lt;span class="s1"&gt;&amp;#39;/../R/x86_64-redhat-linux-gnu-library/4.0/plogr/include&amp;#39;&lt;/span&gt;
+-I&lt;span class="s1"&gt;&amp;#39;/.../renv/staging/1/Rcpp/include&amp;#39;&lt;/span&gt; -I/usr/local/include  
+-fvisibility&lt;span class="o"&gt;=&lt;/span&gt;hidden -fpic  -O2 -flto&lt;span class="o"&gt;=&lt;/span&gt;auto -ffat-lto-objects -fexceptions
+-g -grecord-gcc-switches -pipe -Wall -Werror&lt;span class="o"&gt;=&lt;/span&gt;format-security -Wp,
+-D_FORTIFY_SOURCE&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt; -Wp,-D_GLIBCXX_ASSERTIONS
+-specs&lt;span class="o"&gt;=&lt;/span&gt;/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong
+-specs&lt;span class="o"&gt;=&lt;/span&gt;/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64  -mtune&lt;span class="o"&gt;=&lt;/span&gt;generic
+-fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection  
+-c DbColumn.cpp -o DbColumn.o
+In file included from pch.h:1,
+                 from DbColumn.cpp:1:
+RSQLite.h:9:10: fatal error: Rcpp.h: No such file or directory
+    &lt;span class="m"&gt;9&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="c1"&gt;#include &amp;lt;Rcpp.h&amp;gt;&lt;/span&gt;
+      &lt;span class="p"&gt;|&lt;/span&gt;          ^~~~~~~~
+compilation terminated.
+make: *** &lt;span class="o"&gt;[&lt;/span&gt;/usr/lib64/R/etc/Makeconf:181: DbColumn.o&lt;span class="o"&gt;]&lt;/span&gt; Error &lt;span class="m"&gt;1&lt;/span&gt;
+ERROR: compilation failed &lt;span class="k"&gt;for&lt;/span&gt; package ‘RSQLite’
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To make it work, I think reinstalling &lt;code&gt;Rcpp&lt;/code&gt; package made the difference. I have been upgrading my Fedora lately (bumping from F33 to F34), which leads me to believe that there may have been a change in compiler versions. What I would imagine is that something didn't play well together.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Roman Luštrik</dc:creator><pubDate>Sat, 22 May 2021 08:53:00 +0200</pubDate><guid isPermaLink="false">tag:biolitika.si,2021-05-22:/problem-compiling-rsqlite-from-source.html</guid><category>HowTo</category><category>R</category><category>RSQLite</category></item></channel></rss>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Problem compiling RSQLite from source</title>
+        <link rel="stylesheet" href="https://biolitika.si/theme/css/main.css" />
+        <link href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Biolitika Atom Feed" />
+        <link href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika RSS Feed" />
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://biolitika.si/">Biolitika </a></h1>
+                <nav><ul>
+                    <li class="active"><a href="https://biolitika.si/category/howto.html">HowTo</a></li>
+                    <li><a href="https://biolitika.si/category/ijz.html">IJZ</a></li>
+                    <li><a href="https://biolitika.si/category/opensource.html">OpenSource</a></li>
+                    <li><a href="https://biolitika.si/category/razmisljanja.html">Razmišljanja</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="https://biolitika.si/problem-compiling-rsqlite-from-source.html" rel="bookmark"
+           title="Permalink to Problem compiling RSQLite from source">Problem compiling RSQLite from source</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>2021-05-22</span>
+<span>| tags: <a href="https://biolitika.si/tag/r.html">R</a><a href="https://biolitika.si/tag/rsqlite.html">RSQLite</a></span>
+</footer><!-- /.post-info -->      <p>When I tried to compile RSQLite from source on Fedora 34, I was awaited by this error message.</p>
+<div class="highlight"><pre><span></span><code>Error installing package <span class="s1">&#39;RSQLite&#39;</span>:
+<span class="o">===================================</span>
+* installing to library ‘/.../renv/staging/1’
+* installing *source* package ‘RSQLite’ ...
+** package ‘RSQLite’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+g++ -m64 -std<span class="o">=</span>gnu++11 -I<span class="s2">&quot;/usr/include/R&quot;</span> -DNDEBUG -I. -Ivendor
+-DRSQLITE_USE_BUNDLED_SQLITE -DSQLITE_ENABLE_RTREE
+-DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_FTS3_PARENTHESIS -DSQLITE_ENABLE_FTS5
+-DSQLITE_ENABLE_JSON1 -DSQLITE_ENABLE_STAT4 -DSQLITE_SOUNDEX
+-DRCPP_DEFAULT_INCLUDE_CALL<span class="o">=</span><span class="nb">false</span> -DRCPP_USING_UTF8_ERROR_STRING
+-DBOOST_NO_AUTO_PTR -DSQLITE_MAX_LENGTH<span class="o">=</span><span class="m">2147483647</span> -DHAVE_USLEEP<span class="o">=</span><span class="m">1</span>
+-I<span class="s1">&#39;/../R/x86_64-redhat-linux-gnu-library/4.0/plogr/include&#39;</span>
+-I<span class="s1">&#39;/.../renv/staging/1/Rcpp/include&#39;</span> -I/usr/local/include  
+-fvisibility<span class="o">=</span>hidden -fpic  -O2 -flto<span class="o">=</span>auto -ffat-lto-objects -fexceptions
+-g -grecord-gcc-switches -pipe -Wall -Werror<span class="o">=</span>format-security -Wp,
+-D_FORTIFY_SOURCE<span class="o">=</span><span class="m">2</span> -Wp,-D_GLIBCXX_ASSERTIONS
+-specs<span class="o">=</span>/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong
+-specs<span class="o">=</span>/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64  -mtune<span class="o">=</span>generic
+-fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection  
+-c DbColumn.cpp -o DbColumn.o
+In file included from pch.h:1,
+                 from DbColumn.cpp:1:
+RSQLite.h:9:10: fatal error: Rcpp.h: No such file or directory
+    <span class="m">9</span> <span class="p">|</span> <span class="c1">#include &lt;Rcpp.h&gt;</span>
+      <span class="p">|</span>          ^~~~~~~~
+compilation terminated.
+make: *** <span class="o">[</span>/usr/lib64/R/etc/Makeconf:181: DbColumn.o<span class="o">]</span> Error <span class="m">1</span>
+ERROR: compilation failed <span class="k">for</span> package ‘RSQLite’
+</code></pre></div>
+
+
+<p>To make it work, I think reinstalling <code>Rcpp</code> package made the difference. I have been upgrading my Fedora lately (bumping from F33 to F34), which leads me to believe that there may have been a change in compiler versions. What I would imagine is that something didn't play well together.</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>1995 style links</h2>
+                        <ul>
+                            <li><a href="https://stackoverflow.com/users/322912/roman-lu%C5%A1trik">visit me on StackOverFlow</a></li>
+                            <li><a href="http://metinalista.si/category/metamorfoza">#metamorfoza podcast (SI)</a></li>
+                            <li><a href="https://www.r-bloggers.com">r-bloggers</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">RSS feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate">Tag RSS feed</a></li>
+
+                            <li><a href="https://github.com/romunov">GitHub</a></li>
+                            <li><a href="https://twitter.com/romunov">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/roman-lu%C5%A1trik-5a6586ab">LinkedIn</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-22752654-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

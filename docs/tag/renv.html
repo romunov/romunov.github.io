@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Biolitika - renv</title>
+        <link rel="stylesheet" href="https://biolitika.si/theme/css/main.css" />
+        <link href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Biolitika Atom Feed" />
+        <link href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika RSS Feed" />
+          <link href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika Tags RSS Feed" />
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://biolitika.si/">Biolitika </a></h1>
+                <nav><ul>
+                    <li><a href="https://biolitika.si/category/howto.html">HowTo</a></li>
+                    <li><a href="https://biolitika.si/category/ijz.html">IJZ</a></li>
+                    <li><a href="https://biolitika.si/category/opensource.html">OpenSource</a></li>
+                    <li><a href="https://biolitika.si/category/razmisljanja.html">Razmišljanja</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://biolitika.si/pin-r-package-versions-using-docker-and-renv.html">Pin package versions in your production Docker image</a></h1>
+<footer class="post-info">
+        <span>2020-06-25</span>
+<span>| tags: <a href="https://biolitika.si/tag/r.html">R</a><a href="https://biolitika.si/tag/docker.html">docker</a><a href="https://biolitika.si/tag/renv.html">renv</a><a href="https://biolitika.si/tag/packages.html">packages</a></span>
+</footer><!-- /.post-info --><p>Using package in R is easy. You install from CRAN using <code>install.packages("packagename")</code>, it resolves dependencies and you're good to go. What R natively doesn't handle so well is installing a particular package version without jumping through hoops. Technically you need the source file of the package version you want to install AND all source files of the dependencies (in the correct version, of course). This has been made almost seamless with packages <code>packrat</code> and recently, <code>renv</code>.</p>
+<p>This comes handy when you are constructing a Docker file to run in production. Usually you want to run this defensively and do not want things to change from one image build to another. To get there, you can save all your package names and version into a file (<code>renv.lock</code>) and use that to reconstruct the now defined package structure with predictable versions (see <a href="https://rstudio.github.io/renv/articles/renv.html">renv vignette here</a>).</p>
+<p>For installing into Docker images, you can follow <a href="https://rstudio.github.io/renv/articles/docker.html">the official instructions in renv documentation</a>. Below you'll find modifications I found necessary to get my packages installed.</p>
+<p>My workflow is designed in such a way that I have a <code>Dockerfile</code> located in a folder above my R project I want to deploy. I install all the necessary tools and copy the application into the Docker image. One caveat I noticed when doing this, hidden files were copied too, and <code>.Rprofile</code> (more info i.e. <a href="http://www.onthelambda.com/2014/09/17/fun-with-rprofile-and-customizing-r-startup/">here</a>) was causing me a lot of grief. For example, it contained commands that were looking for <code>renv/activate.R</code> script, which was, naturally, non existent because that's not something you commit to your git repository. This was solved by overwriting it (or deleting it).</p>
+<p>Here is an example that is working for me. See if you can find anything useful in it.</p>
+<div class="highlight"><pre><span></span><code><span class="n">FROM</span> <span class="n">rocker</span><span class="o">/</span><span class="n">r-ver:3</span><span class="mf">.6.2</span>
+
+<span class="n">MAINTAINER</span> <span class="n">Yours</span> <span class="n">Truly</span> <span class="s">&quot;yours.truly@checksnbalances.com&quot;</span>
+
+<span class="c1"># Here is where I install all the necessary system libraries needed</span>
+<span class="c1"># by R packages. Don&#39;t worry, R will, after compiling for 30</span>
+<span class="c1"># minutes and file, tell you what packages you would need.</span>
+<span class="n">RUN</span> <span class="n">apt-get</span> <span class="n">update</span> &amp;&amp; <span class="n">apt-get</span> <span class="n">install</span> -<span class="n">y</span> \
+    <span class="n">zlib1g-dev</span> \
+    <span class="n">libcurl4-openssl-dev</span> \
+    <span class="n">libssl-dev</span>
+
+<span class="c1"># This is something I use to deploy apps to shinyproxy. It is</span>
+<span class="c1"># probably something that could be avoided by specifying host and</span>
+<span class="c1"># port in `runApp()`. Note that the location may be OS dependent.</span>
+<span class="n">RUN</span> <span class="n">echo</span> <span class="s">&#39;local({options(shiny.port = 3838, shiny.host = &quot;0.0.0.0&quot;)})&#39;</span> &gt;&gt; /<span class="n">usr</span><span class="o">/</span><span class="nb">local</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">R</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">Rprofile</span>.<span class="n">site</span>
+
+<span class="c1"># Your code should not be run by root, so creating and switching to</span>
+<span class="c1"># a new user. Feel free to come up with your own fun ID.</span>
+<span class="n">RUN</span> <span class="n">useradd</span> -<span class="sr">m -u 2000 poldeta</span>
+<span class="sr">USER poldeta</span>
+
+<span class="sr"># Recursively make an R library folder. This is where installed R</span>
+<span class="sr"># packages will be stored.</span>
+<span class="sr">RUN mkdir /home/poldeta/R/library -</span><span class="n">p</span> &amp;&amp; <span class="nb">mkdir</span> /<span class="n">home</span><span class="o">/</span><span class="n">poldeta</span><span class="o">/</span><span class="n">shinyapp</span>
+
+<span class="c1"># Moving to the app folder is probably not necessary at this</span>
+<span class="c1"># particular point, but you know, whatever.</span>
+<span class="n">WORKDIR</span> /<span class="n">home</span><span class="o">/</span><span class="n">poldeta</span><span class="o">/</span><span class="n">shinyapp</span>
+
+<span class="c1"># Create .Rprofile site that will include your favorite (writable)</span>
+<span class="c1"># location for installed R packages</span>
+<span class="n">RUN</span> <span class="n">echo</span> <span class="s">&quot;.libPaths(&#39;/home/poldeta/R&#39;)&quot;</span> &gt;&gt; .<span class="n">Rprofile</span> &amp;&amp; <span class="n">R</span> -<span class="n">e</span> <span class="s">&quot;install.packages(&#39;renv&#39;)&quot;</span>
+
+<span class="c1"># Switch to a superuser and copy your application into your Docker</span>
+<span class="c1"># image.</span>
+<span class="n">USER</span> <span class="n">root</span>
+<span class="n">COPY</span> <span class="n">shinyapp</span> /<span class="n">home</span><span class="o">/</span><span class="n">poldeta</span><span class="o">/</span><span class="n">shinyapp</span>
+
+<span class="c1"># Make sure folder and file permissions are set to your new username.</span>
+<span class="n">RUN</span> <span class="n">chown</span> -<span class="n">R</span> <span class="n">poldeta:poldeta</span> /<span class="n">home</span><span class="o">/</span><span class="n">poldeta</span><span class="o">/</span><span class="n">shinyapp</span>
+
+<span class="c1"># This is where the magic happens. When copying the app into the</span>
+<span class="c1"># docker image, `renv.lock` file was also transferred. Because is</span>
+<span class="c1"># being called from the working directory where `renv.lock` is</span>
+<span class="c1"># located, calling `restore()` with defaults makes everything work</span>
+<span class="c1"># as intended.</span>
+<span class="n">USER</span> <span class="n">poldeta</span>
+<span class="n">RUN</span> <span class="n">R</span> -<span class="n">e</span> <span class="s">&quot;renv::restore()&quot;</span>
+
+<span class="c1"># Do any other necessary things to your image.</span>
+<span class="n">EXPOSE</span> <span class="mi">3838</span>
+
+<span class="c1"># Finally, run the app to be served.</span>
+<span class="n">CMD</span> [<span class="s">&quot;R&quot;</span>, <span class="s">&quot;-e&quot;</span>, <span class="s">&quot;shiny::runApp(&#39;/home/poldeta/shinyapp&#39;)&quot;</span>]
+</code></pre></div>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>1995 style links</h2>
+                        <ul>
+                            <li><a href="https://stackoverflow.com/users/322912/roman-lu%C5%A1trik">visit me on StackOverFlow</a></li>
+                            <li><a href="http://metinalista.si/category/metamorfoza">#metamorfoza podcast (SI)</a></li>
+                            <li><a href="https://www.r-bloggers.com">r-bloggers</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">RSS feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate">Tag RSS feed</a></li>
+
+                            <li><a href="https://github.com/romunov">GitHub</a></li>
+                            <li><a href="https://twitter.com/romunov">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/roman-lu%C5%A1trik-5a6586ab">LinkedIn</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-22752654-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

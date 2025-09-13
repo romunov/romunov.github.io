@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Biolitika - httr</title><link>https://biolitika.si/</link><description></description><lastBuildDate>Mon, 21 Jun 2021 19:30:00 +0200</lastBuildDate><item><title>Working with Notion API from R</title><link>https://biolitika.si/working-with-notion-api-from-r.html</link><description>&lt;p&gt;When searching for a solution where I could store some flat files as a database, &lt;a href="https://www.notion.so/"&gt;Notion&lt;/a&gt; came up. The nice thing about it is that it offers an API to most of its functionality. At the time of this writing this is still in beta, but hopefully it will become even more powerful in the future.&lt;/p&gt;
+&lt;p&gt;The functionality I'm concerned with right now is interacting with the databases. The boilerplate code to start communicating via the Notion API is&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nf"&gt;library&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;httr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nf"&gt;library&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;jsonlite&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;NOTION_KEY&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;enter-your-key&amp;quot;&lt;/span&gt;
+
+&lt;span class="n"&gt;ask&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="nf"&gt;GET&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+  &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;https://api.notion.com/v1/databases/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="nf"&gt;add_headers&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Authorization&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;paste&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Bearer&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;NOTION_KEY&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+              &lt;span class="s"&gt;&amp;quot;Notion-Version&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;2021-05-13&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="nf"&gt;stop_for_status&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ask&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nf"&gt;fromJSON&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;rawToChar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ask&lt;/span&gt;&lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You should get an R list of elements returned by this &lt;code&gt;databases&lt;/code&gt; endpoint.&lt;/p&gt;
+&lt;p&gt;To write to a database (add a row), you need to prepare an object that corresponds to the corresponding table schema. A JSON object would look like something like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;properties: &lt;span class="o"&gt;{&lt;/span&gt;
+      Name: &lt;span class="o"&gt;{&lt;/span&gt;
+        title: &lt;span class="o"&gt;[&lt;/span&gt;
+          &lt;span class="o"&gt;{&lt;/span&gt;
+            text: &lt;span class="o"&gt;{&lt;/span&gt;
+              content: &lt;span class="s1"&gt;&amp;#39;Tuscan Kale&amp;#39;&lt;/span&gt;,
+            &lt;span class="o"&gt;}&lt;/span&gt;,
+          &lt;span class="o"&gt;}&lt;/span&gt;,
+        &lt;span class="o"&gt;]&lt;/span&gt;,
+      &lt;span class="o"&gt;}&lt;/span&gt;,
+      Description: &lt;span class="o"&gt;{&lt;/span&gt;
+        text: &lt;span class="o"&gt;[&lt;/span&gt;
+          &lt;span class="o"&gt;{&lt;/span&gt;
+            text: &lt;span class="o"&gt;{&lt;/span&gt;
+              content: &lt;span class="s1"&gt;&amp;#39;A dark green leafy vegetable&amp;#39;&lt;/span&gt;,
+            &lt;span class="o"&gt;}&lt;/span&gt;,
+          &lt;span class="o"&gt;}&lt;/span&gt;,
+        &lt;span class="o"&gt;]&lt;/span&gt;,
+      &lt;span class="o"&gt;}&lt;/span&gt;,
+      &lt;span class="s1"&gt;&amp;#39;Food group&amp;#39;&lt;/span&gt;: &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;select&lt;/span&gt;: &lt;span class="o"&gt;{&lt;/span&gt;
+          name: &lt;span class="s1"&gt;&amp;#39;🥦 Vegetable&amp;#39;&lt;/span&gt;,
+        &lt;span class="o"&gt;}&lt;/span&gt;,
+      &lt;span class="o"&gt;}&lt;/span&gt;,
+      Price: &lt;span class="o"&gt;{&lt;/span&gt;
+        number: &lt;span class="m"&gt;2&lt;/span&gt;.5,
+      &lt;span class="o"&gt;}&lt;/span&gt;,
+    &lt;span class="o"&gt;}&lt;/span&gt;,
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Using a similar logic, I wrote my call in R&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;pb&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+  &lt;span class="n"&gt;parent&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;database_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;NOTION_DATABASE_ID&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+  &lt;span class="n"&gt;properties&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="n"&gt;Name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+      &lt;span class="n"&gt;title&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;4&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="n"&gt;Genus&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+      &lt;span class="n"&gt;rich_text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Neki&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="n"&gt;Species&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+      &lt;span class="n"&gt;rich_text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;noviga&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;but this produced the following error&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;body failed validation. Fix one: body.properties.Name.title.id should be defined, instead was &lt;span class="sb"&gt;`&lt;/span&gt;undefined&lt;span class="sb"&gt;`&lt;/span&gt;.
+body.properties.Name.title.name should be defined, instead was &lt;span class="sb"&gt;`&lt;/span&gt;undefined&lt;span class="sb"&gt;`&lt;/span&gt;.
+body.properties.Name.title.start should be defined, instead was &lt;span class="sb"&gt;`&lt;/span&gt;undefined&lt;span class="sb"&gt;`&lt;/span&gt;.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Long story short, it turns out that every curly braces and array need to be a &lt;code&gt;list()&lt;/code&gt;. This worked (notice the extra &lt;code&gt;list()&lt;/code&gt; calls compared to the original):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;pb&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+  &lt;span class="n"&gt;parent&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;database_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;NOTION_DATABASE_ID&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+  &lt;span class="n"&gt;properties&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="n"&gt;Name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+      &lt;span class="n"&gt;title&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;4&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+      &lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="n"&gt;Genus&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+      &lt;span class="n"&gt;rich_text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Neki&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+      &lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="n"&gt;Species&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+      &lt;span class="n"&gt;rich_text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;noviga&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+      &lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;send.row&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="nf"&gt;POST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+  &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;https://api.notion.com/v1/pages&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="nf"&gt;add_headers&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Authorization&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;paste&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Bearer&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;NOTION_KEY&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+              &lt;span class="s"&gt;&amp;quot;Notion-Version&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;2021-05-13&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+  &lt;span class="n"&gt;body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pb&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="n"&gt;encode&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;json&amp;quot;&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Roman Luštrik</dc:creator><pubDate>Mon, 21 Jun 2021 19:30:00 +0200</pubDate><guid isPermaLink="false">tag:biolitika.si,2021-06-21:/working-with-notion-api-from-r.html</guid><category>HowTo</category><category>R</category><category>API</category><category>Notion</category><category>json</category><category>httr</category></item><item><title>How to authenticate using OAuth2 through R</title><link>https://biolitika.si/how-to-authenticate-using-oauth2-through-r.html</link><description>&lt;p&gt;If you need to have authentication of users in your application, you could invent the proverbial warm water by implementing register, login, logout and other features. Or, you could outsource part of that functionality to well established establishments such as Google, Facebook, Github and other. In addition to knowing the identity of your user, you can potentially gain access to service's APIs, which can be very handy (such as access to users' calendars, e-mail boxes, etc...).&lt;/p&gt;
+&lt;p&gt;In this post, you will learn how to set up authentication using OAuth2 using google, but the process is similar(ly painful) for other services.&lt;/p&gt;
+&lt;p&gt;If you do not know how OAuth2 works, you may want to check out the figures &lt;a href="https://www.joyofdata.de/blog/oauth2-google-api-python-google-analytics/"&gt;here&lt;/a&gt; and &lt;a href="https://developers.google.com/identity/protocols/OAuth2"&gt;here&lt;/a&gt;. Basically it works by sending your user (pops up a website) to a service (e.g. Google), where they confirm access to their data (scope). On return, they will bring with them a "code". This code is then traded in by you at the service desk for a token, which acts as a pass to see particular user's data. Store this somewhere safe.&lt;/p&gt;
+&lt;p&gt;To accomplish this, R package &lt;a href="https://github.com/r-lib/httr"&gt;&lt;code&gt;httr&lt;/code&gt;&lt;/a&gt; comes equipped with all the lingo needed to successfully talk to services. There are some good demos in package &lt;a href="https://github.com/r-lib/httr/blob/master/demo"&gt;source code&lt;/a&gt;, however, it perhaps lacks some minor details. This post will perhaps shine some light on those details, but who knows how long the screenshots will be relevant. Hopefully at least ideas will be evergreen for the foreseeable future.&lt;/p&gt;
+&lt;p&gt;If you haven't done so yet, head over to the &lt;a href=""&gt;google developers' console&lt;/a&gt; and create a new project. In the Credentials menu, create new OAuth client ID credentials.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://biolitika.si/images/create_client_id.png" width="760"&gt;&lt;/p&gt;
+&lt;p&gt;Select Web application and fill out application name and Authorized redirect URIs. This is the URI where user will be diverted to once the authentication has been confirmed. For testing purposes, make sure this is &lt;code&gt;http://localhost/&lt;/code&gt; (notice the trailing slash). Once deployed, the URI here would be sent back to your application's address.
+You can fetch &lt;code&gt;secret&lt;/code&gt; and &lt;code&gt;key&lt;/code&gt; from the Client ID for Web application menu, depicted as black stripes on the figure below.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://biolitika.si/images/client_secret.png" width="760"&gt;&lt;/p&gt;
+&lt;p&gt;Make sure you visit the OAuth consent screen tab and fill in any necessary information needed for transparent functioning of your application.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Below are mock secret and key, they will not work. They are just an example of what they&lt;/span&gt;
+&lt;span class="c1"&gt;#  would look like. Replace with your.&lt;/span&gt;
+&lt;span class="n"&gt;secret&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;vxR9AuyJ4cEwrPNaylaTyC3AfXWIEdQnFotju9Yc6Q4og.apps.googleusercontent.com&lt;/span&gt;
+&lt;span class="s"&gt;key &amp;lt;- &amp;quot;&lt;/span&gt;&lt;span class="n"&gt;afL4IguOXCXC6&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;bPV9lObvxT&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We send the user to choose which account to authenticate with (a new window pops open) and then are returned a token. This token is then used to request any information needed by your app and authorized by the user. To read more on Google scopes, read &lt;a href="https://developers.google.com/identity/protocols/googlescopes"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;This is an example of scope for OAuth2 API.
+&lt;img src="https://biolitika.si/images/google_scopes.png" width="760"&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Ask user to authorize access to his or her data and gain a token.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;auth&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="k"&gt;code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;oauth2&lt;/span&gt;&lt;span class="mf"&gt;.0&lt;/span&gt;&lt;span class="n"&gt;_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;endpoint&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;oauth_endpoints&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;google&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;                            &lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;                            &lt;/span&gt;&lt;span class="n"&gt;scope&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;https://www.googleapis.com/auth/userinfo.profile&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Use token to fetch the actual data.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;req&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;-&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;GET&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;https://www.googleapis.com/oauth2/v1/userinfo&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt;           &lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;auth&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="k"&gt;code&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# This step is needed so that if the call fails, you will be&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="c1"&gt;#  able to detect it and handle it R-way. You are best off wrapping this into&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="c1"&gt;#  a `tryCatch` call if not in interactive session.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;stop_for_status&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;req&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The result would look something along these lines.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# &lt;span class="nv"&gt;I&lt;/span&gt; &lt;span class="nv"&gt;changed&lt;/span&gt; &lt;span class="nv"&gt;sensitive&lt;/span&gt; &lt;span class="nv"&gt;information&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="nv"&gt;this&lt;/span&gt; &lt;span class="nv"&gt;display&lt;/span&gt;, &lt;span class="nv"&gt;so&lt;/span&gt; &lt;span class="nv"&gt;don&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="s"&gt;t bother. :)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="nv"&gt;str&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;content&lt;/span&gt;&lt;span class="ss"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;req&lt;/span&gt;&lt;span class="ss"&gt;))&lt;/span&gt;
+&lt;span class="nv"&gt;List&lt;/span&gt; &lt;span class="nv"&gt;of&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;
+ $ &lt;span class="nv"&gt;id&lt;/span&gt;         : &lt;span class="nv"&gt;chr&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;754846239037474839489&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+ $ &lt;span class="nv"&gt;name&lt;/span&gt;       : &lt;span class="nv"&gt;chr&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;Roman Luštrik&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+ $ &lt;span class="nv"&gt;given_name&lt;/span&gt; : &lt;span class="nv"&gt;chr&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;Roman&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+ $ &lt;span class="nv"&gt;family_name&lt;/span&gt;: &lt;span class="nv"&gt;chr&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;Luštrik&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+ $ &lt;span class="nv"&gt;link&lt;/span&gt;       : &lt;span class="nv"&gt;chr&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;https://plus.google.com/754846239037474839489&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+ $ &lt;span class="nv"&gt;picture&lt;/span&gt;    : &lt;span class="nv"&gt;chr&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;https://lh500600.googleusercontent.com/-32gefACRE/ACCAXSDFCASC/XAAXEXF/asdCac_/photo.jpg&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+ $ &lt;span class="nv"&gt;gender&lt;/span&gt;     : &lt;span class="nv"&gt;chr&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;other&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+ $ &lt;span class="nv"&gt;locale&lt;/span&gt;     : &lt;span class="nv"&gt;chr&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;en&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If you would also like to fetch user's e-mail address, you will need to extend the scope. Note that the query has changed and you will be, once again, asked to confirm that you allow your e-mail address be accessed by the app.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;auth.code&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="nf"&gt;oauth2.0_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;endpoint&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;oauth_endpoints&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;google&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+                            &lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                            &lt;span class="n"&gt;scope&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;c&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;https://www.googleapis.com/auth/userinfo.profile&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                                      &lt;span class="s"&gt;&amp;quot;https://www.googleapis.com/auth/userinfo.email&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;req&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="nf"&gt;GET&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;https://www.googleapis.com/oauth2/v1/userinfo&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+           &lt;span class="nf"&gt;config&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;token&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;auth.code&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+&lt;span class="nf"&gt;stop_for_status&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;req&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nf"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;content&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;req&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+&lt;span class="n"&gt;List&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="m"&gt;10&lt;/span&gt;
+ &lt;span class="o"&gt;$&lt;/span&gt; &lt;span class="n"&gt;id&lt;/span&gt;           &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;chr&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;754846239037474839489&amp;quot;&lt;/span&gt;
+&lt;span class="o"&gt;$&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt;         &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;chr&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;name@gmail.com&amp;quot;&lt;/span&gt;
+&lt;span class="o"&gt;$&lt;/span&gt; &lt;span class="n"&gt;verified_email&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;logi&lt;/span&gt; &lt;span class="kc"&gt;TRUE&lt;/span&gt;
+&lt;span class="o"&gt;$&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;          &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;chr&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Roman Luštrik&amp;quot;&lt;/span&gt;
+&lt;span class="o"&gt;$&lt;/span&gt; &lt;span class="n"&gt;given_name&lt;/span&gt;    &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;chr&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Roman&amp;quot;&lt;/span&gt;
+&lt;span class="o"&gt;$&lt;/span&gt; &lt;span class="n"&gt;family_name&lt;/span&gt;   &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;chr&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Luštrik&amp;quot;&lt;/span&gt;
+&lt;span class="o"&gt;$&lt;/span&gt; &lt;span class="n"&gt;link&lt;/span&gt;          &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;chr&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;https://plus.google.com/754846239037474839489&amp;quot;&lt;/span&gt;
+&lt;span class="o"&gt;$&lt;/span&gt; &lt;span class="n"&gt;picture&lt;/span&gt;       &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;chr&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;https://lh500600.googleusercontent.com/-32gefACRE/ACCAXSDFCASC/XAAXEXF&lt;/span&gt;
+&lt;span class="s"&gt;$ gender        : chr &amp;quot;&lt;/span&gt;&lt;span class="n"&gt;other&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="s"&gt;$ locale        : chr &amp;quot;&lt;/span&gt;&lt;span class="n"&gt;en&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;Error log&lt;/h4&gt;
+&lt;p&gt;Restarting my R session, updating &lt;code&gt;httr&lt;/code&gt; and making sure that the redirect URI was set to &lt;code&gt;http://localhost/&lt;/code&gt; solved my problem with this error below.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;ggl.token&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="nf"&gt;oauth2.0_token&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;endpoint&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;oauth_endpoints&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;google&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+&lt;span class="o"&gt;+&lt;/span&gt;                             &lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="o"&gt;+&lt;/span&gt;                             &lt;span class="n"&gt;scope&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;https://www.googleapis.com/auth/userinfo.profile&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Waiting&lt;/span&gt; &lt;span class="n"&gt;for&lt;/span&gt; &lt;span class="n"&gt;authentication&lt;/span&gt; &lt;span class="n"&gt;in&lt;/span&gt; &lt;span class="n"&gt;browser...&lt;/span&gt;
+&lt;span class="n"&gt;Press&lt;/span&gt; &lt;span class="n"&gt;Esc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Ctrl&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;abort&lt;/span&gt;
+&lt;span class="n"&gt;Authentication&lt;/span&gt; &lt;span class="n"&gt;complete.&lt;/span&gt;
+&lt;span class="n"&gt;Error&lt;/span&gt; &lt;span class="n"&gt;in&lt;/span&gt; &lt;span class="n"&gt;curl&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="nf"&gt;curl_fetch_memory&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;handle&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;handle&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;Could&lt;/span&gt; &lt;span class="n"&gt;not&lt;/span&gt; &lt;span class="n"&gt;resolve&lt;/span&gt; &lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;accounts.google.com&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I came to the idea of restarting my R session when surefire stuff didn't work, such as updating R package(s) using &lt;code&gt;devtools::install_github&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;devtools&lt;/span&gt;&lt;span class="p"&gt;::&lt;/span&gt;&lt;span class="n"&gt;install_github&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;r-lib/httr&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Installation&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;failed&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;curl&lt;/span&gt;&lt;span class="p"&gt;::&lt;/span&gt;&lt;span class="n"&gt;curl_fetch_disk&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;handle&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;handle&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Could&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;not&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;resolve&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;raw&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;githubusercontent&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Roman Luštrik</dc:creator><pubDate>Sun, 20 Jan 2019 00:00:00 +0100</pubDate><guid isPermaLink="false">tag:biolitika.si,2019-01-20:/how-to-authenticate-using-oauth2-through-r.html</guid><category>HowTo</category><category>R</category><category>oauth2</category><category>httr</category><category>curl</category><category>API</category><category>token</category><category>scope</category></item></channel></rss>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Biolitika - shelve</title>
+        <link rel="stylesheet" href="https://biolitika.si/theme/css/main.css" />
+        <link href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Biolitika Atom Feed" />
+        <link href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika RSS Feed" />
+          <link href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika Tags RSS Feed" />
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://biolitika.si/">Biolitika </a></h1>
+                <nav><ul>
+                    <li><a href="https://biolitika.si/category/howto.html">HowTo</a></li>
+                    <li><a href="https://biolitika.si/category/ijz.html">IJZ</a></li>
+                    <li><a href="https://biolitika.si/category/opensource.html">OpenSource</a></li>
+                    <li><a href="https://biolitika.si/category/razmisljanja.html">Razmišljanja</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://biolitika.si/remember-processed-entities-in-python.html">Remember processed entities in Python</a></h1>
+<footer class="post-info">
+        <span>2021-09-04</span>
+<span>| tags: <a href="https://biolitika.si/tag/persistent-storage.html">persistent storage</a><a href="https://biolitika.si/tag/shelf.html">shelf</a><a href="https://biolitika.si/tag/shelve.html">shelve</a><a href="https://biolitika.si/tag/python.html">Python</a></span>
+</footer><!-- /.post-info --><p>There exist not-so-edge cases when you're processing data but your code fails for some reason or another. There are many solutions around this. Complexity increases fault tolerance but also the cost of setting things up. For instance, you could create a Celery task queue or a Redis database for persistent storage to process tasks, but this can be somewhat involved. It can also not be feasible if you're working in a contained environment where installing a new package or piece of software would take a Jira ticket and days of waiting. Also, if you're doing a one-off thing, anything other than simple may be an overkill.</p>
+<p>To remember which entities have been already processed, my initial solution included writing this information into a pickle file. Before processing an entity, I would reread the pickle file and check if the entity has been processed previously. This seems very Flintstony, so I thought I'd use the collective hive mind and asked this question on a local developer community slack channel. A bunch of solutions rushed in, including Redis and Celery, but the one that got my attention the most was the <a href="https://docs.python.org/3/library/shelve.html"><code>shelve</code> object</a> used for persistent storage.</p>
+<p>It's very easy and intuitive to work with. It's just a matter of setting up a shelf as it were and putting things on it. It's nice to tear the shelf down once you're done using it. It's even prepackaed with Python, so no additional installation of packages is needed.</p>
+<p>Here's a small script that demonstrates the functionality. A function <code>run_process</code> processes all the files in folder. First, I add three files and process them. Then I add two more files and process the whole set of files again. Notice that the files that have already been processed are now skipped. This is the result of the script:</p>
+<div class="highlight"><pre><span></span><code><span class="k">[&#39;In file1&#39;]</span><span class="w"></span>
+<span class="k">[&#39;In file2&#39;]</span><span class="w"></span>
+<span class="k">[&#39;In file3&#39;]</span><span class="w"></span>
+<span class="na">Skipping ./file1</span><span class="w"></span>
+<span class="na">Skipping ./file2</span><span class="w"></span>
+<span class="na">Skipping ./file3</span><span class="w"></span>
+<span class="k">[&#39;In file4&#39;]</span><span class="w"></span>
+<span class="k">[&#39;In file5&#39;]</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>The script in its entirety or see <a href="https://gist.github.com/romunov/b79d63caa8874618e734329eaa3d6950">this gist</a>:</p>
+<div class="highlight"><pre><span></span><code><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Off the shelf way to skip already processed entities</span>
+
+<span class="sd">This scripts processes files, remembers which files have been already</span>
+<span class="sd">processed and skips them on the next run.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shelve</span>
+
+
+<span class="k">def</span> <span class="nf">create_files</span><span class="p">(</span><span class="n">file_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates specified files on disk with boring contents.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">file_list</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;wt&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">to_disk</span><span class="p">:</span>
+            <span class="n">to_disk</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;In </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span> <span class="nf">process_file</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Reads file and prints its contents.&quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rt&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">in_file</span><span class="p">:</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">in_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">list_files</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;List all files in a specified path.&quot;&quot;&quot;</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;file*&quot;</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+
+
+<span class="c1"># noinspection PyBroadException</span>
+<span class="k">def</span> <span class="nf">run_process</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Iterate through specified files and process them if not already</span>
+<span class="sd">    done in the previous run.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">shelf</span><span class="p">:</span>
+                <span class="n">process_file</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">obj</span><span class="p">)</span>
+                <span class="n">shelf</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;OK&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Skipping </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Processed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span><span class="si">}</span><span class="s2"> files.&quot;</span>
+
+
+<span class="c1"># This is a file where memories of processed files go.</span>
+<span class="n">CACHE_FILE</span> <span class="o">=</span> <span class="s2">&quot;processed.cache&quot;</span>
+
+<span class="n">shelf</span> <span class="o">=</span> <span class="n">shelve</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">CACHE_FILE</span><span class="p">)</span>
+
+<span class="n">create_files</span><span class="p">(</span><span class="n">file_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;file1&quot;</span><span class="p">,</span> <span class="s2">&quot;file2&quot;</span><span class="p">,</span> <span class="s2">&quot;file3&quot;</span><span class="p">])</span>
+
+<span class="n">available_files</span> <span class="o">=</span> <span class="n">list_files</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+
+<span class="n">run_process</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="n">available_files</span><span class="p">)</span>
+
+<span class="n">create_files</span><span class="p">(</span><span class="n">file_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;file4&quot;</span><span class="p">,</span> <span class="s2">&quot;file5&quot;</span><span class="p">])</span>
+
+<span class="n">available_files</span> <span class="o">=</span> <span class="n">list_files</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+
+<span class="n">run_process</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="n">available_files</span><span class="p">)</span>
+
+<span class="c1"># Close the shelf</span>
+<span class="n">shelf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c1"># Remove any files that may have been created during the execution of</span>
+<span class="c1"># this script.</span>
+<span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">available_files</span><span class="p">:</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">CACHE_FILE</span><span class="p">)</span>
+</code></pre></div>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>1995 style links</h2>
+                        <ul>
+                            <li><a href="https://stackoverflow.com/users/322912/roman-lu%C5%A1trik">visit me on StackOverFlow</a></li>
+                            <li><a href="http://metinalista.si/category/metamorfoza">#metamorfoza podcast (SI)</a></li>
+                            <li><a href="https://www.r-bloggers.com">r-bloggers</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">RSS feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate">Tag RSS feed</a></li>
+
+                            <li><a href="https://github.com/romunov">GitHub</a></li>
+                            <li><a href="https://twitter.com/romunov">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/roman-lu%C5%A1trik-5a6586ab">LinkedIn</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-22752654-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

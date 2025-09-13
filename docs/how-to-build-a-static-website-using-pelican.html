@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>How to build a static website using Pelican</title>
+        <link rel="stylesheet" href="https://biolitika.si/theme/css/main.css" />
+        <link href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Biolitika Atom Feed" />
+        <link href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika RSS Feed" />
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://biolitika.si/">Biolitika </a></h1>
+                <nav><ul>
+                    <li class="active"><a href="https://biolitika.si/category/howto.html">HowTo</a></li>
+                    <li><a href="https://biolitika.si/category/ijz.html">IJZ</a></li>
+                    <li><a href="https://biolitika.si/category/opensource.html">OpenSource</a></li>
+                    <li><a href="https://biolitika.si/category/razmisljanja.html">Razmišljanja</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="https://biolitika.si/how-to-build-a-static-website-using-pelican.html" rel="bookmark"
+           title="Permalink to How to build a static website using Pelican">How to build a static website using Pelican</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>2018-03-19</span>
+<span>| tags: <a href="https://biolitika.si/tag/pelican.html">pelican</a></span>
+</footer><!-- /.post-info -->      <p>It's fairly easy to build a static website. Static websites differ from dynamic in that they do not communicate with a database of any sorts. This makes it easier and especially cheaper to deploy to almost any setup which runs at least rudimentary serving capabilities.</p>
+<p>There are many options for static site generation, I chose <a href="http://docs.getpelican.com/en/stable/quickstart.html">Pelican</a>. There is no particular adamant reason behind it, but <a href="http://pelicanthemes.com/">browsing for themes</a> did tilt the scales in its favor.</p>
+<p>Workflow is basically simple. One time install is that of <code>Python</code> (e.g. version 3.6). Once you have that, I would recommend you also get <code>pip install virtualenvwrapper</code>.</p>
+<p>You then activate virtual environment and install all dependencies for <code>pelican</code>.</p>
+<div class="highlight"><pre><span></span><code># create and activate virtual environment
+mkvirtenv mystaticwebsite
+workon mystaticwebsite
+
+# installs pelican
+pip install pelican
+</code></pre></div>
+
+
+<p>Create your project folder</p>
+<div class="highlight"><pre><span></span><code>mkdir mywebsite
+cd mywebsite
+</code></pre></div>
+
+
+<p>Now feel free to follow <a href="http://docs.getpelican.com/en/stable/quickstart.html">instructions from <code>pelican-quickstart</code></a> on.</p>
+<p>Once you are done writing contents to a markdown (<code>.md</code>) file you 'publish' your website, which puts all the bits and pieces together (applies settings, theme...) into an <code>/output</code> folder. You can do that using <code>pelican content --output output --ignore-cache --relative-urls --settings publishconf.py</code>. Making paths relative enables you to view your site locally without resorting to changing <code>SITEURL = ''</code> before compiling.</p>
+<p>To make your website ready to be published, feel free to include settings specified in the <code>publishconf.py</code>, e.g. <code>pelican content --output output --ignore-cache --settings publishconf.py</code>. Ignoring cache will make sure some weird bits do not get left in and Pelican starts afresh.</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>1995 style links</h2>
+                        <ul>
+                            <li><a href="https://stackoverflow.com/users/322912/roman-lu%C5%A1trik">visit me on StackOverFlow</a></li>
+                            <li><a href="http://metinalista.si/category/metamorfoza">#metamorfoza podcast (SI)</a></li>
+                            <li><a href="https://www.r-bloggers.com">r-bloggers</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">RSS feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate">Tag RSS feed</a></li>
+
+                            <li><a href="https://github.com/romunov">GitHub</a></li>
+                            <li><a href="https://twitter.com/romunov">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/roman-lu%C5%A1trik-5a6586ab">LinkedIn</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-22752654-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

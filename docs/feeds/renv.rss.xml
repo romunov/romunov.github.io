@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Biolitika - renv</title><link>https://biolitika.si/</link><description></description><lastBuildDate>Thu, 25 Jun 2020 12:34:00 +0200</lastBuildDate><item><title>Pin package versions in your production Docker image</title><link>https://biolitika.si/pin-r-package-versions-using-docker-and-renv.html</link><description>&lt;p&gt;Using package in R is easy. You install from CRAN using &lt;code&gt;install.packages("packagename")&lt;/code&gt;, it resolves dependencies and you're good to go. What R natively doesn't handle so well is installing a particular package version without jumping through hoops. Technically you need the source file of the package version you want to install AND all source files of the dependencies (in the correct version, of course). This has been made almost seamless with packages &lt;code&gt;packrat&lt;/code&gt; and recently, &lt;code&gt;renv&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;This comes handy when you are constructing a Docker file to run in production. Usually you want to run this defensively and do not want things to change from one image build to another. To get there, you can save all your package names and version into a file (&lt;code&gt;renv.lock&lt;/code&gt;) and use that to reconstruct the now defined package structure with predictable versions (see &lt;a href="https://rstudio.github.io/renv/articles/renv.html"&gt;renv vignette here&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;For installing into Docker images, you can follow &lt;a href="https://rstudio.github.io/renv/articles/docker.html"&gt;the official instructions in renv documentation&lt;/a&gt;. Below you'll find modifications I found necessary to get my packages installed.&lt;/p&gt;
+&lt;p&gt;My workflow is designed in such a way that I have a &lt;code&gt;Dockerfile&lt;/code&gt; located in a folder above my R project I want to deploy. I install all the necessary tools and copy the application into the Docker image. One caveat I noticed when doing this, hidden files were copied too, and &lt;code&gt;.Rprofile&lt;/code&gt; (more info i.e. &lt;a href="http://www.onthelambda.com/2014/09/17/fun-with-rprofile-and-customizing-r-startup/"&gt;here&lt;/a&gt;) was causing me a lot of grief. For example, it contained commands that were looking for &lt;code&gt;renv/activate.R&lt;/code&gt; script, which was, naturally, non existent because that's not something you commit to your git repository. This was solved by overwriting it (or deleting it).&lt;/p&gt;
+&lt;p&gt;Here is an example that is working for me. See if you can find anything useful in it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;FROM&lt;/span&gt; &lt;span class="n"&gt;rocker&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;r-ver:3&lt;/span&gt;&lt;span class="mf"&gt;.6.2&lt;/span&gt;
+
+&lt;span class="n"&gt;MAINTAINER&lt;/span&gt; &lt;span class="n"&gt;Yours&lt;/span&gt; &lt;span class="n"&gt;Truly&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;yours.truly@checksnbalances.com&amp;quot;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Here is where I install all the necessary system libraries needed&lt;/span&gt;
+&lt;span class="c1"&gt;# by R packages. Don&amp;#39;t worry, R will, after compiling for 30&lt;/span&gt;
+&lt;span class="c1"&gt;# minutes and file, tell you what packages you would need.&lt;/span&gt;
+&lt;span class="n"&gt;RUN&lt;/span&gt; &lt;span class="n"&gt;apt-get&lt;/span&gt; &lt;span class="n"&gt;update&lt;/span&gt; &amp;amp;&amp;amp; &lt;span class="n"&gt;apt-get&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; -&lt;span class="n"&gt;y&lt;/span&gt; \
+    &lt;span class="n"&gt;zlib1g-dev&lt;/span&gt; \
+    &lt;span class="n"&gt;libcurl4-openssl-dev&lt;/span&gt; \
+    &lt;span class="n"&gt;libssl-dev&lt;/span&gt;
+
+&lt;span class="c1"&gt;# This is something I use to deploy apps to shinyproxy. It is&lt;/span&gt;
+&lt;span class="c1"&gt;# probably something that could be avoided by specifying host and&lt;/span&gt;
+&lt;span class="c1"&gt;# port in `runApp()`. Note that the location may be OS dependent.&lt;/span&gt;
+&lt;span class="n"&gt;RUN&lt;/span&gt; &lt;span class="n"&gt;echo&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;local({options(shiny.port = 3838, shiny.host = &amp;quot;0.0.0.0&amp;quot;)})&amp;#39;&lt;/span&gt; &amp;gt;&amp;gt; /&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nb"&gt;local&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;lib&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;R&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Rprofile&lt;/span&gt;.&lt;span class="n"&gt;site&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Your code should not be run by root, so creating and switching to&lt;/span&gt;
+&lt;span class="c1"&gt;# a new user. Feel free to come up with your own fun ID.&lt;/span&gt;
+&lt;span class="n"&gt;RUN&lt;/span&gt; &lt;span class="n"&gt;useradd&lt;/span&gt; -&lt;span class="sr"&gt;m -u 2000 poldeta&lt;/span&gt;
+&lt;span class="sr"&gt;USER poldeta&lt;/span&gt;
+
+&lt;span class="sr"&gt;# Recursively make an R library folder. This is where installed R&lt;/span&gt;
+&lt;span class="sr"&gt;# packages will be stored.&lt;/span&gt;
+&lt;span class="sr"&gt;RUN mkdir /home/poldeta/R/library -&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &amp;amp;&amp;amp; &lt;span class="nb"&gt;mkdir&lt;/span&gt; /&lt;span class="n"&gt;home&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;poldeta&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;shinyapp&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Moving to the app folder is probably not necessary at this&lt;/span&gt;
+&lt;span class="c1"&gt;# particular point, but you know, whatever.&lt;/span&gt;
+&lt;span class="n"&gt;WORKDIR&lt;/span&gt; /&lt;span class="n"&gt;home&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;poldeta&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;shinyapp&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Create .Rprofile site that will include your favorite (writable)&lt;/span&gt;
+&lt;span class="c1"&gt;# location for installed R packages&lt;/span&gt;
+&lt;span class="n"&gt;RUN&lt;/span&gt; &lt;span class="n"&gt;echo&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;.libPaths(&amp;#39;/home/poldeta/R&amp;#39;)&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; .&lt;span class="n"&gt;Rprofile&lt;/span&gt; &amp;amp;&amp;amp; &lt;span class="n"&gt;R&lt;/span&gt; -&lt;span class="n"&gt;e&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;install.packages(&amp;#39;renv&amp;#39;)&amp;quot;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Switch to a superuser and copy your application into your Docker&lt;/span&gt;
+&lt;span class="c1"&gt;# image.&lt;/span&gt;
+&lt;span class="n"&gt;USER&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;
+&lt;span class="n"&gt;COPY&lt;/span&gt; &lt;span class="n"&gt;shinyapp&lt;/span&gt; /&lt;span class="n"&gt;home&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;poldeta&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;shinyapp&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Make sure folder and file permissions are set to your new username.&lt;/span&gt;
+&lt;span class="n"&gt;RUN&lt;/span&gt; &lt;span class="n"&gt;chown&lt;/span&gt; -&lt;span class="n"&gt;R&lt;/span&gt; &lt;span class="n"&gt;poldeta:poldeta&lt;/span&gt; /&lt;span class="n"&gt;home&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;poldeta&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;shinyapp&lt;/span&gt;
+
+&lt;span class="c1"&gt;# This is where the magic happens. When copying the app into the&lt;/span&gt;
+&lt;span class="c1"&gt;# docker image, `renv.lock` file was also transferred. Because is&lt;/span&gt;
+&lt;span class="c1"&gt;# being called from the working directory where `renv.lock` is&lt;/span&gt;
+&lt;span class="c1"&gt;# located, calling `restore()` with defaults makes everything work&lt;/span&gt;
+&lt;span class="c1"&gt;# as intended.&lt;/span&gt;
+&lt;span class="n"&gt;USER&lt;/span&gt; &lt;span class="n"&gt;poldeta&lt;/span&gt;
+&lt;span class="n"&gt;RUN&lt;/span&gt; &lt;span class="n"&gt;R&lt;/span&gt; -&lt;span class="n"&gt;e&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;renv::restore()&amp;quot;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Do any other necessary things to your image.&lt;/span&gt;
+&lt;span class="n"&gt;EXPOSE&lt;/span&gt; &lt;span class="mi"&gt;3838&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Finally, run the app to be served.&lt;/span&gt;
+&lt;span class="n"&gt;CMD&lt;/span&gt; [&lt;span class="s"&gt;&amp;quot;R&amp;quot;&lt;/span&gt;, &lt;span class="s"&gt;&amp;quot;-e&amp;quot;&lt;/span&gt;, &lt;span class="s"&gt;&amp;quot;shiny::runApp(&amp;#39;/home/poldeta/shinyapp&amp;#39;)&amp;quot;&lt;/span&gt;]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Roman Luštrik</dc:creator><pubDate>Thu, 25 Jun 2020 12:34:00 +0200</pubDate><guid isPermaLink="false">tag:biolitika.si,2020-06-25:/pin-r-package-versions-using-docker-and-renv.html</guid><category>HowTo</category><category>R</category><category>docker</category><category>renv</category><category>packages</category></item></channel></rss>

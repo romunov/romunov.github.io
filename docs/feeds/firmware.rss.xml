@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Biolitika - firmware</title><link>https://biolitika.si/</link><description></description><lastBuildDate>Sat, 26 Dec 2020 16:30:00 +0100</lastBuildDate><item><title>Upgrading Fedora 31 -&gt; 33 on a Dell</title><link>https://biolitika.si/upgrading-fedora-31-to-33-on-a-dell.html</link><description>&lt;p&gt;Upgrading operating system usually isn't a pleasant experience in my book. This is especially true for Linux machines. This experience is drawn based on playing around in Debian, Ubuntu and lately, Fedora.&lt;/p&gt;
+&lt;p&gt;Against my better judgment I decided to upgrade to the latest Fedora version (currently 33). Basically, I followed instructions such as &lt;a href="https://www.linuxjournal.com/content/how-upgrade-fedora-32-fedora-33-cli-graphical-methods"&gt;these&lt;/a&gt;, where you install a plugin, upgrade package and finally the OS.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# This is a one-time operation.&lt;/span&gt;
+$ sudo dnf install dnf-plugin-system-upgrade
+
+$ sudo dnf upgrade --refresh
+$ sudo dnf system-upgrade download --releasever&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;32&lt;/span&gt;
+$ sudo dnf system-upgrade reboot
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When installing 31 -&amp;gt; 32, I did &lt;code&gt;dnf update --refresh&lt;/code&gt;, under Software installed everything that had to be upgraded and went through with the upgrade. Upon reboot (last command), computer's firmware started to be upgraded. It would seem there were some firmware updates. It didn't take long for the error messages to start popping up and computer automatically shutting down. Great.&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/updating_firmware.jpg"&gt;&lt;/img&gt;&lt;/p&gt;
+&lt;p&gt;After turning it on, I kept getting an assistant window which tried to correct mistakes. It would seem that unable to find a bootable device means nothing is wrong.&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/support_assist_working.jpeg"&gt;&lt;/img&gt;
+&lt;img src="images/support_assist_no_error.jpeg"&gt;&lt;/img&gt;&lt;/p&gt;
+&lt;p&gt;At this point no amount of reboots helped. Having all the backups I was not worried but I did manage to forget to create a bootable Fedora LiveUSB drive. Great again.&lt;/p&gt;
+&lt;p&gt;Calling a friend, he created the latest Fedora workstation 33 image. When we tried to boot from that USB drive, the problem was that the computer wouldn't even turn on. After searching the internet for possible answers and doing all sorts of combinations with holding down the power button and connecting/disconnecting the computer from power source, all of a sudden the computer woke up and resumed upgrading Fedora (without the USB key). What. The. Fuck.&lt;/p&gt;
+&lt;p&gt;After the upgrade finished, I followed the same three steps (upgrade, system-upgrade and reboot) for version 33 and that time around, things went smoothly.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Roman Luštrik</dc:creator><pubDate>Sat, 26 Dec 2020 16:30:00 +0100</pubDate><guid isPermaLink="false">tag:biolitika.si,2020-12-26:/upgrading-fedora-31-to-33-on-a-dell.html</guid><category>HowTo</category><category>fedora</category><category>linux</category><category>upgrading</category><category>firmware</category><category>clusterfuck</category></item></channel></rss>

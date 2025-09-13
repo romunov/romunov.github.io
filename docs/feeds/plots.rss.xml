@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Biolitika - plots</title><link>https://biolitika.si/</link><description></description><lastBuildDate>Tue, 02 Oct 2018 00:00:00 +0200</lastBuildDate><item><title>How to combine plots and table made with ggplot (or grid graphics) in R</title><link>https://biolitika.si/how-to-combine-plots-and-table-made-with-ggplot-or-grid-graphics-in-r.html</link><description>&lt;p&gt;In the last few years, a number of options of how to combine grid graphics (incl. &lt;code&gt;ggplot2&lt;/code&gt;) have emerged.
+If you can't remember all functions to do this, this post may serve as a reference guide, but it's mostly
+for me because I keep forgetting the functionalities provided by &lt;a href="https://github.com/wilkelab/cowplot"&gt;&lt;code&gt;cowplot&lt;/code&gt;&lt;/a&gt; and &lt;a href="https://github.com/thomasp85/patchwork"&gt;&lt;code&gt;patchwork&lt;/code&gt;&lt;/a&gt; packages (&lt;a href="https://chat.stackoverflow.com/transcript/75819?m=44067437#44067437"&gt;thank you Jaap&lt;/a&gt;). Here appearing in order I encountered them.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nf"&gt;library&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ggplot2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# prepare some figures&lt;/span&gt;
+&lt;span class="n"&gt;fig1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="nf"&gt;ggplot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mtcars&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nf"&gt;aes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mpg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;disp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;color&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;as.factor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;gear&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+  &lt;span class="nf"&gt;theme_bw&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+  &lt;span class="nf"&gt;theme&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;legend.position&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;top&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+  &lt;span class="nf"&gt;scale_color_discrete&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;gear&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+  &lt;span class="nf"&gt;geom_point&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;fig2&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="nf"&gt;ggplot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mtcars&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nf"&gt;aes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;gear&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;disp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;fill&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nf"&gt;as.factor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;gear&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+  &lt;span class="nf"&gt;theme_bw&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+  &lt;span class="nf"&gt;theme&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;legend.position&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;top&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+  &lt;span class="nf"&gt;scale_fill_discrete&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;gear&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+  &lt;span class="nf"&gt;geom_violin&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;gridExtra&lt;/h2&gt;
+&lt;p&gt;Here is oldie but goldie from Baptiste's &lt;a href="https://cran.r-project.org/web/packages/gridExtra/index.html"&gt;&lt;code&gt;gridExtra&lt;/code&gt;&lt;/a&gt; package.
+You can, for example, specify the layout matrix or specify number of columns. The below code chunk is using &lt;code&gt;ggplot2::ggsave&lt;/code&gt; which saves the last subplot only, which is why I saved the result of &lt;code&gt;grid.arrange&lt;/code&gt; into a new variable (but see &lt;code&gt;cowplot&lt;/code&gt; below).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nf"&gt;library&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;gridExtra&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;fig.combined1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="nf"&gt;grid.arrange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fig1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;fig2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ncol&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nf"&gt;ggsave&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;plot&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fig.combined1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;filename&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;grid.arrange.png&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+       &lt;span class="n"&gt;width&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;8&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;height&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;units&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;in&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;dpi&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;96&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="oldie but goldie grid arrange" src="https://biolitika.si/images/grid.arrange.png"&gt;&lt;/p&gt;
+&lt;h2&gt;cowplot&lt;/h2&gt;
+&lt;p&gt;Next is &lt;code&gt;cowplot&lt;/code&gt;, which comes with nice &lt;a href="https://cran.r-project.org/web/packages/cowplot/index.html"&gt;vignettes&lt;/a&gt;. What I like about this package is the elegant adding of letters to subplots, e.g.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;library(cowplot)
+
+plot_grid(fig1, fig2, labels = &amp;quot;AUTO&amp;quot;)
+cowplot::ggsave(filename = &amp;quot;plotgrid.png&amp;quot;, width = 8,
+                height = 4, units = &amp;quot;in&amp;quot;, dpi = 96)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;See the vignettes for more information. Package also packs its own &lt;code&gt;ggplot&lt;/code&gt; which masks the function &lt;code&gt;ggplot2::ggsave&lt;/code&gt; (read: &lt;code&gt;ggsave&lt;/code&gt; from package &lt;code&gt;ggplot2&lt;/code&gt;). The beauty of it is that it saves the gridded plot, not the last (sub)plot.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="cowplot's grid_plot" src="https://biolitika.si/images/plotgrid.png"&gt;&lt;/p&gt;
+&lt;h2&gt;patchwork&lt;/h2&gt;
+&lt;p&gt;Thomas did a great job of making combining of plots trivially easy. The &lt;a href="https://github.com/thomasp85/patchwork"&gt;GitHub repository&lt;/a&gt; of the package is a rich source of information and I could never do it justice. Here's my botched attempt of just an example of what the package functionality provides.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;library(patchwork)
+
+fig1 + fig2
+cowplot
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="patchwork plus" src="https://biolitika.si/images/patchplus.png"&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Roman Luštrik</dc:creator><pubDate>Tue, 02 Oct 2018 00:00:00 +0200</pubDate><guid isPermaLink="false">tag:biolitika.si,2018-10-02:/how-to-combine-plots-and-table-made-with-ggplot-or-grid-graphics-in-r.html</guid><category>HowTo</category><category>R</category><category>ggplot2</category><category>combine</category><category>plots</category><category>gridExtra</category><category>cowplot</category><category>patchwork</category></item></channel></rss>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Build Pelican static website using GitHub actions</title>
+        <link rel="stylesheet" href="https://biolitika.si/theme/css/main.css" />
+        <link href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Biolitika Atom Feed" />
+        <link href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika RSS Feed" />
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://biolitika.si/">Biolitika </a></h1>
+                <nav><ul>
+                    <li class="active"><a href="https://biolitika.si/category/howto.html">HowTo</a></li>
+                    <li><a href="https://biolitika.si/category/ijz.html">IJZ</a></li>
+                    <li><a href="https://biolitika.si/category/opensource.html">OpenSource</a></li>
+                    <li><a href="https://biolitika.si/category/razmisljanja.html">Razmišljanja</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="https://biolitika.si/build-pelican-static-website-using-github-actions.html" rel="bookmark"
+           title="Permalink to Build Pelican static website using GitHub actions">Build Pelican static website using GitHub actions</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>2020-08-06</span>
+
+</footer><!-- /.post-info -->      <p>GitHub enables the delivery of static contents using <a href="https://pages.github.com/">GitHub Pages</a>. That is, you create a GitHub repository and serve it as a regular static website. For most use cases I need, this is more than enough.</p>
+<p>I use Pelican to create a static website from <code>.md</code> files. This content resides within the <code>master</code> branch of my repository and consists of theme folder, content (where my blog posts are saved), <code>Makefile</code> and some configuration files. Since I'm serving my website to a custom domain (and not just romunov.github.io), I also have a <code>./content/extra/CNAME</code> entry with <code>biolitika.si</code> for the re-routing to work.</p>
+<p>To get the GitHub workflow running, I created a <code>.github/workflows/build-blog.yml</code> file with the following content:</p>
+<div class="highlight"><pre><span></span><code><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">Deploy</span><span class="w"> </span><span class="n">biolitika</span><span class="w"> </span><span class="n">blog</span><span class="w"></span>
+<span class="n">on</span><span class="o">:</span><span class="w"></span>
+<span class="w">  </span><span class="n">push</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">branches</span><span class="o">:</span><span class="w"></span>
+<span class="w">      </span><span class="o">-</span><span class="w"> </span><span class="n">master</span><span class="w"></span>
+<span class="n">jobs</span><span class="o">:</span><span class="w"></span>
+<span class="w">  </span><span class="n">build_job</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">Deploy</span><span class="w"> </span><span class="n">blog</span><span class="w"></span>
+<span class="w">    </span><span class="n">runs</span><span class="o">-</span><span class="n">on</span><span class="o">:</span><span class="w"> </span><span class="n">ubuntu</span><span class="o">-</span><span class="n">latest</span><span class="w"></span>
+<span class="w">    </span><span class="n">steps</span><span class="o">:</span><span class="w"></span>
+<span class="w">      </span><span class="o">-</span><span class="w"> </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">Install</span><span class="w"> </span><span class="n">Python</span><span class="w"></span>
+<span class="w">        </span><span class="n">uses</span><span class="o">:</span><span class="w"> </span><span class="n">actions</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">python</span><span class="err">@</span><span class="n">v2</span><span class="w"></span>
+<span class="w">        </span><span class="k">with</span><span class="o">:</span><span class="w"></span>
+<span class="w">          </span><span class="n">python</span><span class="o">-</span><span class="n">version</span><span class="o">:</span><span class="w"> </span><span class="mf">3.7</span><span class="w"></span>
+<span class="w">      </span><span class="o">-</span><span class="w"> </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">Checkout</span><span class="w"> </span><span class="n">website</span><span class="w"> </span><span class="n">source</span><span class="w"></span>
+<span class="w">        </span><span class="n">id</span><span class="o">:</span><span class="w"> </span><span class="n">checkout</span><span class="o">-</span><span class="n">master</span><span class="w"></span>
+<span class="w">        </span><span class="n">uses</span><span class="o">:</span><span class="w"> </span><span class="n">actions</span><span class="o">/</span><span class="n">checkout</span><span class="err">@</span><span class="n">v2</span><span class="w"></span>
+<span class="w">      </span><span class="o">-</span><span class="w"> </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">Cache</span><span class="w"> </span><span class="n">dependencies</span><span class="w"></span>
+<span class="w">        </span><span class="n">uses</span><span class="o">:</span><span class="w"> </span><span class="n">actions</span><span class="o">/</span><span class="n">cache</span><span class="err">@</span><span class="n">v2</span><span class="w"></span>
+<span class="w">        </span><span class="k">with</span><span class="o">:</span><span class="w"></span>
+<span class="w">          </span><span class="n">path</span><span class="o">:</span><span class="w"> </span><span class="o">~/.</span><span class="n">cache</span><span class="o">/</span><span class="n">pip</span><span class="w"></span>
+<span class="w">          </span><span class="n">key</span><span class="o">:</span><span class="w"> </span><span class="n">pelican</span><span class="o">-</span><span class="mf">4.2</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">$</span><span class="o">{{</span><span class="w"> </span><span class="n">hashFiles</span><span class="o">(</span><span class="s1">&#39;requirements.txt&#39;</span><span class="o">)</span><span class="w"> </span><span class="o">}}</span><span class="w"></span>
+<span class="w">          </span><span class="n">restore</span><span class="o">-</span><span class="n">keys</span><span class="o">:</span><span class="w"> </span><span class="o">|</span><span class="w"></span>
+<span class="w">            </span><span class="n">pelican</span><span class="o">-</span><span class="mf">4.2</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="w"></span>
+<span class="w">      </span><span class="o">-</span><span class="w"> </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">Install</span><span class="w"> </span><span class="n">Pelican</span><span class="w"></span>
+<span class="w">        </span><span class="n">run</span><span class="o">:</span><span class="w"> </span><span class="o">|</span><span class="w"></span>
+<span class="w">          </span><span class="n">pip</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">requirements</span><span class="o">.</span><span class="na">txt</span><span class="w"></span>
+<span class="w">      </span><span class="o">-</span><span class="w"> </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">Run</span><span class="w"> </span><span class="n">Pelican</span><span class="w"></span>
+<span class="w">        </span><span class="n">id</span><span class="o">:</span><span class="w"> </span><span class="n">run</span><span class="o">-</span><span class="n">pelican</span><span class="w"></span>
+<span class="w">        </span><span class="n">run</span><span class="o">:</span><span class="w"> </span><span class="o">|</span><span class="w"></span>
+<span class="w">          </span><span class="n">pelican</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="o">--</span><span class="n">output</span><span class="w"> </span><span class="n">docs</span><span class="w"> </span><span class="o">--</span><span class="n">settings</span><span class="w"> </span><span class="n">publishconf</span><span class="o">.</span><span class="na">py</span><span class="w"></span>
+<span class="w">      </span><span class="o">-</span><span class="w"> </span><span class="n">name</span><span class="o">:</span><span class="w"> </span><span class="n">Push</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">GitHub</span><span class="w"> </span><span class="n">pages</span><span class="w"></span>
+<span class="w">        </span><span class="n">id</span><span class="o">:</span><span class="w"> </span><span class="n">push</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">gh</span><span class="o">-</span><span class="n">pages</span><span class="w"></span>
+<span class="w">        </span><span class="n">run</span><span class="o">:</span><span class="w"> </span><span class="o">|</span><span class="w"></span>
+<span class="w">          </span><span class="n">git</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">--</span><span class="n">global</span><span class="w"> </span><span class="n">user</span><span class="o">.</span><span class="na">name</span><span class="w"> </span><span class="s2">&quot;my username&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="n">git</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">--</span><span class="n">global</span><span class="w"> </span><span class="n">user</span><span class="o">.</span><span class="na">email</span><span class="w"> </span><span class="s2">&quot;myemail@provider.com&quot;</span><span class="w"></span>
+
+<span class="w">          </span><span class="n">git</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">docs</span><span class="o">/</span><span class="w"></span>
+<span class="w">          </span><span class="n">git</span><span class="w"> </span><span class="n">commit</span><span class="w"> </span><span class="o">--</span><span class="n">amend</span><span class="w"> </span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">edit</span><span class="w"></span>
+
+<span class="w">          </span><span class="n">git</span><span class="w"> </span><span class="n">push</span><span class="w"> </span><span class="n">origin</span><span class="w"> </span><span class="n">master</span><span class="o">:</span><span class="n">deploy</span><span class="w"> </span><span class="o">--</span><span class="n">force</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Once you commit this file, a new Workflow should appear in GitHub Actions tab.</p>
+<p><img src="https://biolitika.si/images/gh_actions.png" width="760"></p>
+<p>The detail important for this case is that once Pelican creates a <code>docs/</code> folder, new changes are pushed to a new branch called <code>deploy</code>. I have configured this repository so that the static content is served from <code>deploy</code> branch, <code>docs/</code> folder.</p>
+<p>Every time I submit new commit(s), workflow is triggered (on push) and new contents delivered.</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>1995 style links</h2>
+                        <ul>
+                            <li><a href="https://stackoverflow.com/users/322912/roman-lu%C5%A1trik">visit me on StackOverFlow</a></li>
+                            <li><a href="http://metinalista.si/category/metamorfoza">#metamorfoza podcast (SI)</a></li>
+                            <li><a href="https://www.r-bloggers.com">r-bloggers</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">RSS feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate">Tag RSS feed</a></li>
+
+                            <li><a href="https://github.com/romunov">GitHub</a></li>
+                            <li><a href="https://twitter.com/romunov">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/roman-lu%C5%A1trik-5a6586ab">LinkedIn</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-22752654-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

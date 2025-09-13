@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Next generation testing?</title>
+        <link rel="stylesheet" href="https://biolitika.si/theme/css/main.css" />
+        <link href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Biolitika Atom Feed" />
+        <link href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika RSS Feed" />
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://biolitika.si/">Biolitika </a></h1>
+                <nav><ul>
+                    <li><a href="https://biolitika.si/category/howto.html">HowTo</a></li>
+                    <li><a href="https://biolitika.si/category/ijz.html">IJZ</a></li>
+                    <li><a href="https://biolitika.si/category/opensource.html">OpenSource</a></li>
+                    <li><a href="https://biolitika.si/category/razmisljanja.html">Razmišljanja</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="https://biolitika.si/drafts/next-generation-testing.html" rel="bookmark"
+           title="Permalink to Next generation testing?">Next generation testing?</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>2018-12-08</span>
+<span>| tags: <a href="https://biolitika.si/tag/r.html">R</a><a href="https://biolitika.si/tag/testing.html">testing</a><a href="https://biolitika.si/tag/package.html">package</a><a href="https://biolitika.si/tag/development.html">development</a></span>
+</footer><!-- /.post-info -->      <p>Testing package functionality is always a hurdle, yet essential part of delivering predictable results to your users. An also important point of testing is keeping you at easy knowing that any change in code pertaining functionality will be caught by the tests if changes appear to break it.</p>
+<p>From what I can gather, R is supported by <code>RUnit</code> and <code>testthat</code> packages which perform unit testing. What his means is that you create snippets of code which test different aspects of your code. These files are neatly located inside a separate folder, files structured in a (non) logical manner which are put to use at user's behest or when checking a package for inconsistencies.</p>
+<p>But what if we had a new kind of testing framework which would not require us to write tests manually into separate location. What if we could just test code inline? Here's what I mean.</p>
+<div class="highlight"><pre><span></span><code><span class="n">testing.x</span> <span class="o">&lt;-</span> <span class="m">1</span><span class="o">:</span><span class="m">5</span>  <span class="c1"># input predefined at the beginning of function or roxygen2 header?</span>
+
+<span class="n">myFunction</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">input</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">len</span> <span class="o">&lt;-</span> <span class="nf">length</span><span class="p">(</span><span class="n">input</span><span class="p">)</span>
+  <span class="n">sm</span> <span class="o">&lt;-</span> <span class="nf">sum</span><span class="p">(</span><span class="n">input</span><span class="p">)</span>
+
+  <span class="c1"># Testing part</span>
+  <span class="nf">inline_test</span><span class="p">(</span><span class="n">len</span> <span class="o">&gt;</span> <span class="m">0</span><span class="p">)</span>  <span class="c1"># length cannot be zero or less</span>
+
+  <span class="nf">return</span><span class="p">(</span><span class="n">sm</span><span class="o">/</span><span class="n">len</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+<p>First I setup a testing string. This could be perhaps placed in roxygen2 header, perhaps it would have its own tag e.g. <code>#' @testInput</code> (?)</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>1995 style links</h2>
+                        <ul>
+                            <li><a href="https://stackoverflow.com/users/322912/roman-lu%C5%A1trik">visit me on StackOverFlow</a></li>
+                            <li><a href="http://metinalista.si/category/metamorfoza">#metamorfoza podcast (SI)</a></li>
+                            <li><a href="https://www.r-bloggers.com">r-bloggers</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">RSS feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate">Tag RSS feed</a></li>
+
+                            <li><a href="https://github.com/romunov">GitHub</a></li>
+                            <li><a href="https://twitter.com/romunov">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/roman-lu%C5%A1trik-5a6586ab">LinkedIn</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-22752654-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

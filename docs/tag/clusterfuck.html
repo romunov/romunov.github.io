@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Biolitika - clusterfuck</title>
+        <link rel="stylesheet" href="https://biolitika.si/theme/css/main.css" />
+        <link href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Biolitika Atom Feed" />
+        <link href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika RSS Feed" />
+          <link href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika Tags RSS Feed" />
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://biolitika.si/">Biolitika </a></h1>
+                <nav><ul>
+                    <li><a href="https://biolitika.si/category/howto.html">HowTo</a></li>
+                    <li><a href="https://biolitika.si/category/ijz.html">IJZ</a></li>
+                    <li><a href="https://biolitika.si/category/opensource.html">OpenSource</a></li>
+                    <li><a href="https://biolitika.si/category/razmisljanja.html">Razmišljanja</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://biolitika.si/upgrading-fedora-31-to-33-on-a-dell.html">Upgrading Fedora 31 -> 33 on a Dell</a></h1>
+<footer class="post-info">
+        <span>2020-12-26</span>
+<span>| tags: <a href="https://biolitika.si/tag/fedora.html">fedora</a><a href="https://biolitika.si/tag/linux.html">linux</a><a href="https://biolitika.si/tag/upgrading.html">upgrading</a><a href="https://biolitika.si/tag/firmware.html">firmware</a><a href="https://biolitika.si/tag/clusterfuck.html">clusterfuck</a></span>
+</footer><!-- /.post-info --><p>Upgrading operating system usually isn't a pleasant experience in my book. This is especially true for Linux machines. This experience is drawn based on playing around in Debian, Ubuntu and lately, Fedora.</p>
+<p>Against my better judgment I decided to upgrade to the latest Fedora version (currently 33). Basically, I followed instructions such as <a href="https://www.linuxjournal.com/content/how-upgrade-fedora-32-fedora-33-cli-graphical-methods">these</a>, where you install a plugin, upgrade package and finally the OS.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># This is a one-time operation.</span>
+$ sudo dnf install dnf-plugin-system-upgrade
+
+$ sudo dnf upgrade --refresh
+$ sudo dnf system-upgrade download --releasever<span class="o">=</span><span class="m">32</span>
+$ sudo dnf system-upgrade reboot
+</code></pre></div>
+
+
+<p>When installing 31 -&gt; 32, I did <code>dnf update --refresh</code>, under Software installed everything that had to be upgraded and went through with the upgrade. Upon reboot (last command), computer's firmware started to be upgraded. It would seem there were some firmware updates. It didn't take long for the error messages to start popping up and computer automatically shutting down. Great.</p>
+<p><img src="images/updating_firmware.jpg"></img></p>
+<p>After turning it on, I kept getting an assistant window which tried to correct mistakes. It would seem that unable to find a bootable device means nothing is wrong.</p>
+<p><img src="images/support_assist_working.jpeg"></img>
+<img src="images/support_assist_no_error.jpeg"></img></p>
+<p>At this point no amount of reboots helped. Having all the backups I was not worried but I did manage to forget to create a bootable Fedora LiveUSB drive. Great again.</p>
+<p>Calling a friend, he created the latest Fedora workstation 33 image. When we tried to boot from that USB drive, the problem was that the computer wouldn't even turn on. After searching the internet for possible answers and doing all sorts of combinations with holding down the power button and connecting/disconnecting the computer from power source, all of a sudden the computer woke up and resumed upgrading Fedora (without the USB key). What. The. Fuck.</p>
+<p>After the upgrade finished, I followed the same three steps (upgrade, system-upgrade and reboot) for version 33 and that time around, things went smoothly.</p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>1995 style links</h2>
+                        <ul>
+                            <li><a href="https://stackoverflow.com/users/322912/roman-lu%C5%A1trik">visit me on StackOverFlow</a></li>
+                            <li><a href="http://metinalista.si/category/metamorfoza">#metamorfoza podcast (SI)</a></li>
+                            <li><a href="https://www.r-bloggers.com">r-bloggers</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">RSS feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate">Tag RSS feed</a></li>
+
+                            <li><a href="https://github.com/romunov">GitHub</a></li>
+                            <li><a href="https://twitter.com/romunov">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/roman-lu%C5%A1trik-5a6586ab">LinkedIn</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-22752654-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>

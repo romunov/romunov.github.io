@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Biolitika - rebase</title>
+        <link rel="stylesheet" href="https://biolitika.si/theme/css/main.css" />
+        <link href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Biolitika Atom Feed" />
+        <link href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika RSS Feed" />
+          <link href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate" title="Biolitika Tags RSS Feed" />
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://biolitika.si/">Biolitika </a></h1>
+                <nav><ul>
+                    <li><a href="https://biolitika.si/category/howto.html">HowTo</a></li>
+                    <li><a href="https://biolitika.si/category/ijz.html">IJZ</a></li>
+                    <li><a href="https://biolitika.si/category/opensource.html">OpenSource</a></li>
+                    <li><a href="https://biolitika.si/category/razmisljanja.html">Razmišljanja</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://biolitika.si/insert-changes-into-deep-commits.html">Insert changes into deep commits</a></h1>
+<footer class="post-info">
+        <span>2019-06-14</span>
+<span>| tags: <a href="https://biolitika.si/tag/git.html">git</a><a href="https://biolitika.si/tag/version-control.html">version control</a><a href="https://biolitika.si/tag/rebase.html">rebase</a><a href="https://biolitika.si/tag/fixup.html">fixup</a></span>
+</footer><!-- /.post-info --><p>Have you ever committed a branch and review addressed issues from all commits? This post will address the issue of making changes at the top of the commit tree and then committing them deep to their respective commits.</p>
+<p>A snapshot of the situation is illustrated in the below code chunk.</p>
+<div class="highlight"><pre><span></span><code><span class="n">romunov</span><span class="nv">@mucek</span><span class="err">:</span><span class="o">~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme</span><span class="err">$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="nf">log</span><span class="w"></span>
+<span class="k">commit</span><span class="w"> </span><span class="mi">1</span><span class="n">f78688a40598552262af08598fb4eb256421df8</span><span class="w"> </span><span class="p">(</span><span class="n">HEAD</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">master</span><span class="p">)</span><span class="w"></span>
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Roman</span><span class="w"> </span><span class="n">Luštrik</span><span class="w"> </span><span class="o">&lt;</span><span class="n">romunov</span><span class="nv">@gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+<span class="nc">Date</span><span class="err">:</span><span class="w">   </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="err">:</span><span class="mi">22</span><span class="err">:</span><span class="mi">47</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mi">0200</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">Add</span><span class="w"> </span><span class="n">file3</span><span class="w"></span>
+
+<span class="k">commit</span><span class="w"> </span><span class="n">f7defe93b96436047988e9e5d943f22c9e136ad4</span><span class="w"></span>
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Roman</span><span class="w"> </span><span class="n">Luštrik</span><span class="w"> </span><span class="o">&lt;</span><span class="n">romunov</span><span class="nv">@gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+<span class="nc">Date</span><span class="err">:</span><span class="w">   </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="err">:</span><span class="mi">22</span><span class="err">:</span><span class="mi">34</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mi">0200</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">Add</span><span class="w"> </span><span class="n">file2</span><span class="w"></span>
+
+<span class="k">commit</span><span class="w"> </span><span class="mi">27</span><span class="n">a395f1f8878d83b8fc03629f1ef455f56db616</span><span class="w"></span>
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Roman</span><span class="w"> </span><span class="n">Luštrik</span><span class="w"> </span><span class="o">&lt;</span><span class="n">romunov</span><span class="nv">@gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+<span class="nc">Date</span><span class="err">:</span><span class="w">   </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="err">:</span><span class="mi">22</span><span class="err">:</span><span class="mi">16</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mi">0200</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">Add</span><span class="w"> </span><span class="n">file1</span><span class="w"></span>
+
+<span class="k">commit</span><span class="w"> </span><span class="mi">3</span><span class="n">fa086c62d4cf0041169a50946e0cc428fcc90d8</span><span class="w"></span>
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Roman</span><span class="w"> </span><span class="n">Luštrik</span><span class="w"> </span><span class="o">&lt;</span><span class="n">romunov</span><span class="nv">@gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+<span class="nc">Date</span><span class="err">:</span><span class="w">   </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="err">:</span><span class="mi">21</span><span class="err">:</span><span class="mi">55</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mi">0200</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">welcome</span><span class="w"></span>
+
+<span class="n">romunov</span><span class="nv">@mucek</span><span class="err">:</span><span class="o">~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme</span><span class="err">$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">status</span><span class="w"></span>
+<span class="k">On</span><span class="w"> </span><span class="n">branch</span><span class="w"> </span><span class="n">master</span><span class="w"></span>
+<span class="n">Changes</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">staged</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="k">commit</span><span class="err">:</span><span class="w"></span>
+<span class="w">  </span><span class="p">(</span><span class="k">use</span><span class="w"> </span><span class="ss">&quot;git add &lt;file&gt;...&quot;</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">update</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">committed</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">(</span><span class="k">use</span><span class="w"> </span><span class="ss">&quot;git checkout -- &lt;file&gt;...&quot;</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">discard</span><span class="w"> </span><span class="n">changes</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">working</span><span class="w"> </span><span class="n">directory</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="nl">modified</span><span class="p">:</span><span class="w">   </span><span class="n">file1</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="w">    </span><span class="nl">modified</span><span class="p">:</span><span class="w">   </span><span class="n">file2</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="w">    </span><span class="nl">modified</span><span class="p">:</span><span class="w">   </span><span class="n">file3</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+
+<span class="k">no</span><span class="w"> </span><span class="n">changes</span><span class="w"> </span><span class="n">added</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">commit</span><span class="w"> </span><span class="p">(</span><span class="k">use</span><span class="w"> </span><span class="ss">&quot;git add&quot;</span><span class="w"> </span><span class="ow">and</span><span class="o">/</span><span class="ow">or</span><span class="w"> </span><span class="ss">&quot;git commit -a&quot;</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>I will show you how to iteratively make commits of files, hiding the rest of the uncommited changes, pushing those added files to the appropriate commit and then rinse and repeat until all the changes are done.</p>
+<p>Starting from scratch, let's create a folder called <code>fixme</code> that will contain 4 files. Each file will reside in its own commit.</p>
+<div class="highlight"><pre><span></span><code><span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents$</span><span class="w"> </span><span class="n">mkdir</span><span class="w"> </span><span class="n">fixme</span><span class="w"></span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents$</span><span class="w"> </span><span class="n">cd</span><span class="w"> </span><span class="n">fixme</span><span class="o">/</span><span class="w"></span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">init</span><span class="w"></span>
+<span class="n">Initialized</span><span class="w"> </span><span class="n">empty</span><span class="w"> </span><span class="n">Git</span><span class="w"> </span><span class="n">repository</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">romunov</span><span class="o">/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme</span><span class="o">/</span><span class="p">.</span><span class="n">git</span><span class="o">/</span><span class="w"></span>
+
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s">&quot;welcome&quot;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">welcome</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">welcome</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">commit</span><span class="w"> </span><span class="o">-</span><span class="n">m</span><span class="w"> </span><span class="s">&quot;welcome&quot;</span><span class="w"></span>
+<span class="p">[</span><span class="n">master</span><span class="w"> </span><span class="p">(</span><span class="n">root</span><span class="o">-</span><span class="n">commit</span><span class="p">)</span><span class="w"> </span><span class="mf">3f</span><span class="n">a086c</span><span class="p">]</span><span class="w"> </span><span class="n">welcome</span><span class="w"></span>
+<span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">changed</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">insertion</span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="n">create</span><span class="w"> </span><span class="n">mode</span><span class="w"> </span><span class="mi">100644</span><span class="w"> </span><span class="n">welcome</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s">&quot;txt in file1&quot;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">file1</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">file1</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">commit</span><span class="w"> </span><span class="o">-</span><span class="n">m</span><span class="w"> </span><span class="s">&quot;Add file1&quot;</span><span class="w"></span>
+<span class="p">[</span><span class="n">master</span><span class="w"> </span><span class="mi">27</span><span class="n">a395f</span><span class="p">]</span><span class="w"> </span><span class="n">Add</span><span class="w"> </span><span class="n">file1</span><span class="w"></span>
+<span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">changed</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">insertion</span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="n">create</span><span class="w"> </span><span class="n">mode</span><span class="w"> </span><span class="mi">100644</span><span class="w"> </span><span class="n">file1</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s">&quot;txt in file2&quot;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">file2</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">file2</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">commit</span><span class="w"> </span><span class="o">-</span><span class="n">m</span><span class="w"> </span><span class="s">&quot;Add file2&quot;</span><span class="w"></span>
+<span class="p">[</span><span class="n">master</span><span class="w"> </span><span class="n">f7defe9</span><span class="p">]</span><span class="w"> </span><span class="n">Add</span><span class="w"> </span><span class="n">file2</span><span class="w"></span>
+<span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">changed</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">insertion</span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="n">create</span><span class="w"> </span><span class="n">mode</span><span class="w"> </span><span class="mi">100644</span><span class="w"> </span><span class="n">file2</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s">&quot;txt in file3&quot;</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">file3</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">file3</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">commit</span><span class="w"> </span><span class="o">-</span><span class="n">m</span><span class="w"> </span><span class="s">&quot;Add file3&quot;</span><span class="w"></span>
+<span class="p">[</span><span class="n">master</span><span class="w"> </span><span class="mf">1f</span><span class="mi">78688</span><span class="p">]</span><span class="w"> </span><span class="n">Add</span><span class="w"> </span><span class="n">file3</span><span class="w"></span>
+<span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">changed</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">insertion</span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="n">create</span><span class="w"> </span><span class="n">mode</span><span class="w"> </span><span class="mi">100644</span><span class="w"> </span><span class="n">file3</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">status</span><span class="w"></span>
+<span class="n">On</span><span class="w"> </span><span class="n">branch</span><span class="w"> </span><span class="n">master</span><span class="w"></span>
+<span class="n">nothing</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">commit</span><span class="p">,</span><span class="w"> </span><span class="n">working</span><span class="w"> </span><span class="n">tree</span><span class="w"> </span><span class="n">clean</span><span class="w"></span>
+
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">log</span><span class="w"></span>
+<span class="n">commit</span><span class="w"> </span><span class="mf">1f</span><span class="mi">78688</span><span class="n">a40598552262af08598fb4eb256421df8</span><span class="w"> </span><span class="p">(</span><span class="n">HEAD</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">master</span><span class="p">)</span><span class="w"></span>
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Roman</span><span class="w"> </span><span class="n">Luštrik</span><span class="w"> </span><span class="o">&lt;</span><span class="n">romunov</span><span class="p">@</span><span class="n">gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+<span class="nl">Date</span><span class="p">:</span><span class="w">   </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="o">:</span><span class="mi">22</span><span class="o">:</span><span class="mi">47</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mo">0200</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">Add</span><span class="w"> </span><span class="n">file3</span><span class="w"></span>
+
+<span class="n">commit</span><span class="w"> </span><span class="n">f7defe93b96436047988e9e5d943f22c9e136ad4</span><span class="w"></span>
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Roman</span><span class="w"> </span><span class="n">Luštrik</span><span class="w"> </span><span class="o">&lt;</span><span class="n">romunov</span><span class="p">@</span><span class="n">gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+<span class="nl">Date</span><span class="p">:</span><span class="w">   </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="o">:</span><span class="mi">22</span><span class="o">:</span><span class="mi">34</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mo">0200</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">Add</span><span class="w"> </span><span class="n">file2</span><span class="w"></span>
+
+<span class="n">commit</span><span class="w"> </span><span class="mi">27</span><span class="n">a395f1f8878d83b8fc03629f1ef455f56db616</span><span class="w"></span>
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Roman</span><span class="w"> </span><span class="n">Luštrik</span><span class="w"> </span><span class="o">&lt;</span><span class="n">romunov</span><span class="p">@</span><span class="n">gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+<span class="nl">Date</span><span class="p">:</span><span class="w">   </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="o">:</span><span class="mi">22</span><span class="o">:</span><span class="mi">16</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mo">0200</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">Add</span><span class="w"> </span><span class="n">file1</span><span class="w"></span>
+
+<span class="n">commit</span><span class="w"> </span><span class="mf">3f</span><span class="n">a086c62d4cf0041169a50946e0cc428fcc90d8</span><span class="w"></span>
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Roman</span><span class="w"> </span><span class="n">Luštrik</span><span class="w"> </span><span class="o">&lt;</span><span class="n">romunov</span><span class="p">@</span><span class="n">gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+<span class="nl">Date</span><span class="p">:</span><span class="w">   </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="o">:</span><span class="mi">21</span><span class="o">:</span><span class="mi">55</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mo">0200</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">welcome</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Now let's create some changes to all files.</p>
+<div class="highlight"><pre><span></span><code><span class="n">romunov</span><span class="nv">@mucek</span><span class="err">:</span><span class="o">~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme</span><span class="err">$</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="ss">&quot;another txt in file 1&quot;</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">file1</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="n">romunov</span><span class="nv">@mucek</span><span class="err">:</span><span class="o">~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme</span><span class="err">$</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="ss">&quot;another txt in file 2&quot;</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">file2</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="n">romunov</span><span class="nv">@mucek</span><span class="err">:</span><span class="o">~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme</span><span class="err">$</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="ss">&quot;another txt in file 3&quot;</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">file3</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="n">romunov</span><span class="nv">@mucek</span><span class="err">:</span><span class="o">~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme</span><span class="err">$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">status</span><span class="w"></span>
+<span class="k">On</span><span class="w"> </span><span class="n">branch</span><span class="w"> </span><span class="n">master</span><span class="w"></span>
+<span class="n">Changes</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">staged</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="k">commit</span><span class="err">:</span><span class="w"></span>
+<span class="w">  </span><span class="p">(</span><span class="k">use</span><span class="w"> </span><span class="ss">&quot;git add &lt;file&gt;...&quot;</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">update</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">committed</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">(</span><span class="k">use</span><span class="w"> </span><span class="ss">&quot;git checkout -- &lt;file&gt;...&quot;</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">discard</span><span class="w"> </span><span class="n">changes</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">working</span><span class="w"> </span><span class="n">directory</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="nl">modified</span><span class="p">:</span><span class="w">   </span><span class="n">file1</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="w">    </span><span class="nl">modified</span><span class="p">:</span><span class="w">   </span><span class="n">file2</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="w">    </span><span class="nl">modified</span><span class="p">:</span><span class="w">   </span><span class="n">file3</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+
+<span class="k">no</span><span class="w"> </span><span class="n">changes</span><span class="w"> </span><span class="n">added</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">commit</span><span class="w"> </span><span class="p">(</span><span class="k">use</span><span class="w"> </span><span class="ss">&quot;git add&quot;</span><span class="w"> </span><span class="ow">and</span><span class="o">/</span><span class="ow">or</span><span class="w"> </span><span class="ss">&quot;git commit -a&quot;</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Let's push each change for <code>file1</code>, <code>file2</code> and <code>file3</code> to its corresponding commit.
+The steps taken are
+1. add specific file
+2. push to specific commit using <code>--fixup</code>
+3. hide uncommited changes using <code>git stash</code>
+4. rebase
+5. recall uncommited changes using <code>git stash apply</code> and go from 1.</p>
+<p>Some comments about the code are inline.</p>
+<div class="highlight"><pre><span></span><code><span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">file1</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="cp"># To get hash of a commit, see above or use `git log`.</span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">commit</span><span class="w"> </span><span class="o">--</span><span class="n">fixup</span><span class="o">=</span><span class="mi">27</span><span class="n">a395f1f8878d83b8fc03629f1ef455f56db616</span><span class="w"></span>
+<span class="p">[</span><span class="n">master</span><span class="w"> </span><span class="n">f24f11b</span><span class="p">]</span><span class="w"> </span><span class="n">fixup</span><span class="o">!</span><span class="w"> </span><span class="n">Add</span><span class="w"> </span><span class="n">file1</span><span class="w"></span>
+<span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">changed</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">insertion</span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"></span>
+
+<span class="w"> </span><span class="cp"># Hide uncommited changes.</span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">stash</span><span class="w"></span>
+<span class="n">Saved</span><span class="w"> </span><span class="n">working</span><span class="w"> </span><span class="n">directory</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="n">WIP</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">master</span><span class="o">:</span><span class="w"> </span><span class="n">f24f11b</span><span class="w"> </span><span class="n">fixup</span><span class="o">!</span><span class="w"> </span><span class="n">Add</span><span class="w"> </span><span class="n">file1</span><span class="w"></span>
+
+<span class="cp"># Notice that the new fixedup commit is on top.</span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">log</span><span class="w"></span>
+<span class="n">commit</span><span class="w"> </span><span class="n">f24f11b7ca983be10b2cf3f477ebd649542d3ba2</span><span class="w"> </span><span class="p">(</span><span class="n">HEAD</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">master</span><span class="p">)</span><span class="w"></span>
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Roman</span><span class="w"> </span><span class="n">Luštrik</span><span class="w"> </span><span class="o">&lt;</span><span class="n">romunov</span><span class="p">@</span><span class="n">gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+<span class="nl">Date</span><span class="p">:</span><span class="w">   </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="o">:</span><span class="mi">24</span><span class="o">:</span><span class="mi">14</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mo">0200</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">fixup</span><span class="o">!</span><span class="w"> </span><span class="n">Add</span><span class="w"> </span><span class="n">file1</span><span class="w"></span>
+
+<span class="n">commit</span><span class="w"> </span><span class="mf">1f</span><span class="mi">78688</span><span class="n">a40598552262af08598fb4eb256421df8</span><span class="w"></span>
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Roman</span><span class="w"> </span><span class="n">Luštrik</span><span class="w"> </span><span class="o">&lt;</span><span class="n">romunov</span><span class="p">@</span><span class="n">gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+<span class="nl">Date</span><span class="p">:</span><span class="w">   </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="o">:</span><span class="mi">22</span><span class="o">:</span><span class="mi">47</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mo">0200</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">Add</span><span class="w"> </span><span class="n">file3</span><span class="w"></span>
+
+<span class="n">commit</span><span class="w"> </span><span class="n">f7defe93b96436047988e9e5d943f22c9e136ad4</span><span class="w"></span>
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Roman</span><span class="w"> </span><span class="n">Luštrik</span><span class="w"> </span><span class="o">&lt;</span><span class="n">romunov</span><span class="p">@</span><span class="n">gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+<span class="nl">Date</span><span class="p">:</span><span class="w">   </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="o">:</span><span class="mi">22</span><span class="o">:</span><span class="mi">34</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mo">0200</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">Add</span><span class="w"> </span><span class="n">file2</span><span class="w"></span>
+
+<span class="n">commit</span><span class="w"> </span><span class="mi">27</span><span class="n">a395f1f8878d83b8fc03629f1ef455f56db616</span><span class="w"></span>
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Roman</span><span class="w"> </span><span class="n">Luštrik</span><span class="w"> </span><span class="o">&lt;</span><span class="n">romunov</span><span class="p">@</span><span class="n">gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+<span class="nl">Date</span><span class="p">:</span><span class="w">   </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="o">:</span><span class="mi">22</span><span class="o">:</span><span class="mi">16</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mo">0200</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">Add</span><span class="w"> </span><span class="n">file1</span><span class="w"></span>
+
+<span class="n">commit</span><span class="w"> </span><span class="mf">3f</span><span class="n">a086c62d4cf0041169a50946e0cc428fcc90d8</span><span class="w"></span>
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Roman</span><span class="w"> </span><span class="n">Luštrik</span><span class="w"> </span><span class="o">&lt;</span><span class="n">romunov</span><span class="p">@</span><span class="n">gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+<span class="nl">Date</span><span class="p">:</span><span class="w">   </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="o">:</span><span class="mi">21</span><span class="o">:</span><span class="mi">55</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mo">0200</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">welcome</span><span class="w"></span>
+
+<span class="cp"># Rebase. Make sure you go back in time (HEAD~X) so that you cover them</span>
+<span class="cp"># actual commit message. Use autosquash so you don&#39;t have to manually</span>
+<span class="cp"># squash it in the next window.    </span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">rebase</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">HEAD</span><span class="o">~</span><span class="mi">4</span><span class="w"> </span><span class="o">--</span><span class="n">autosquash</span><span class="w"></span>
+</code></pre></div>
+
+
+<p><img src="https://biolitika.si/images/fixup_file1.jpg" width="500" class="center"></p>
+<div class="highlight"><pre><span></span><code><span class="n">Successfully</span><span class="w"> </span><span class="n">rebased</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="n">refs</span><span class="o">/</span><span class="n">heads</span><span class="o">/</span><span class="n">master</span><span class="p">.</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="k">top</span><span class="w"> </span><span class="ss">&quot;fixup&quot;</span><span class="w"> </span><span class="k">commit</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="n">been</span><span class="w"> </span><span class="n">squashed</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="k">commit</span><span class="w"> </span><span class="n">titled</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="ss">&quot;Add file1&quot;</span><span class="p">.</span><span class="w"></span>
+<span class="n">romunov</span><span class="nv">@mucek</span><span class="err">:</span><span class="o">~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme</span><span class="err">$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="nf">log</span><span class="w"></span>
+<span class="k">commit</span><span class="w"> </span><span class="mf">95e48</span><span class="n">ac32aa93256aa248f8077c293bf16b8d911</span><span class="w"> </span><span class="p">(</span><span class="n">HEAD</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">master</span><span class="p">)</span><span class="w"></span>
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Roman</span><span class="w"> </span><span class="n">Luštrik</span><span class="w"> </span><span class="o">&lt;</span><span class="n">romunov</span><span class="nv">@gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+<span class="nc">Date</span><span class="err">:</span><span class="w">   </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="err">:</span><span class="mi">22</span><span class="err">:</span><span class="mi">47</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mi">0200</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">Add</span><span class="w"> </span><span class="n">file3</span><span class="w"></span>
+
+<span class="k">commit</span><span class="w"> </span><span class="mf">7e881</span><span class="n">feb91bdf326a3af985697d7837283a2ba12</span><span class="w"></span>
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Roman</span><span class="w"> </span><span class="n">Luštrik</span><span class="w"> </span><span class="o">&lt;</span><span class="n">romunov</span><span class="nv">@gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+<span class="nc">Date</span><span class="err">:</span><span class="w">   </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="err">:</span><span class="mi">22</span><span class="err">:</span><span class="mi">34</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mi">0200</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">Add</span><span class="w"> </span><span class="n">file2</span><span class="w"></span>
+
+<span class="k">commit</span><span class="w"> </span><span class="mi">6</span><span class="n">d52f8818d587fded3910dd688f4fe6a762fd7dd</span><span class="w"></span>
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Roman</span><span class="w"> </span><span class="n">Luštrik</span><span class="w"> </span><span class="o">&lt;</span><span class="n">romunov</span><span class="nv">@gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+<span class="nc">Date</span><span class="err">:</span><span class="w">   </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="err">:</span><span class="mi">22</span><span class="err">:</span><span class="mi">16</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mi">0200</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">Add</span><span class="w"> </span><span class="n">file1</span><span class="w"></span>
+
+<span class="k">commit</span><span class="w"> </span><span class="mi">3</span><span class="n">fa086c62d4cf0041169a50946e0cc428fcc90d8</span><span class="w"></span>
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Roman</span><span class="w"> </span><span class="n">Luštrik</span><span class="w"> </span><span class="o">&lt;</span><span class="n">romunov</span><span class="nv">@gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+<span class="nc">Date</span><span class="err">:</span><span class="w">   </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="err">:</span><span class="mi">21</span><span class="err">:</span><span class="mi">55</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mi">0200</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">welcome</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>We now bring back uncommited changes...</p>
+<div class="highlight"><pre><span></span><code><span class="n">romunov</span><span class="nv">@mucek</span><span class="err">:</span><span class="o">~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme</span><span class="err">$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">stash</span><span class="w"> </span><span class="n">apply</span><span class="w"></span>
+<span class="k">On</span><span class="w"> </span><span class="n">branch</span><span class="w"> </span><span class="n">master</span><span class="w"></span>
+<span class="n">Changes</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">staged</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="k">commit</span><span class="err">:</span><span class="w"></span>
+<span class="w">  </span><span class="p">(</span><span class="k">use</span><span class="w"> </span><span class="ss">&quot;git add &lt;file&gt;...&quot;</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">update</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">committed</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">(</span><span class="k">use</span><span class="w"> </span><span class="ss">&quot;git checkout -- &lt;file&gt;...&quot;</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">discard</span><span class="w"> </span><span class="n">changes</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">working</span><span class="w"> </span><span class="n">directory</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="nl">modified</span><span class="p">:</span><span class="w">   </span><span class="n">file2</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="w">    </span><span class="nl">modified</span><span class="p">:</span><span class="w">   </span><span class="n">file3</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+
+<span class="k">no</span><span class="w"> </span><span class="n">changes</span><span class="w"> </span><span class="n">added</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">commit</span><span class="w"> </span><span class="p">(</span><span class="k">use</span><span class="w"> </span><span class="ss">&quot;git add&quot;</span><span class="w"> </span><span class="ow">and</span><span class="o">/</span><span class="ow">or</span><span class="w"> </span><span class="ss">&quot;git commit -a&quot;</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>... and go through the same process again.</p>
+<div class="highlight"><pre><span></span><code><span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">file2</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">commit</span><span class="w"> </span><span class="o">--</span><span class="n">fixup</span><span class="o">=</span><span class="mf">7e881f</span><span class="n">eb91bdf326a3af985697d7837283a2ba12</span><span class="w"></span>
+<span class="p">[</span><span class="n">master</span><span class="w"> </span><span class="n">d3f6227</span><span class="p">]</span><span class="w"> </span><span class="n">fixup</span><span class="o">!</span><span class="w"> </span><span class="n">Add</span><span class="w"> </span><span class="n">file2</span><span class="w"></span>
+<span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">changed</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">insertion</span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"></span>
+
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">stash</span><span class="w"></span>
+<span class="n">Saved</span><span class="w"> </span><span class="n">working</span><span class="w"> </span><span class="n">directory</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="n">WIP</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">master</span><span class="o">:</span><span class="w"> </span><span class="n">d3f6227</span><span class="w"> </span><span class="n">fixup</span><span class="o">!</span><span class="w"> </span><span class="n">Add</span><span class="w"> </span><span class="n">file2</span><span class="w"></span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">rebase</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">HEAD</span><span class="o">~</span><span class="mi">4</span><span class="w"> </span><span class="o">--</span><span class="n">autosquash</span><span class="w"></span>
+</code></pre></div>
+
+
+<p><img src="https://biolitika.si/images/fixup_file2.jpg" width="500" class="center"></p>
+<div class="highlight"><pre><span></span><code>Successfully rebased and updated refs/heads/master.
+</code></pre></div>
+
+
+<p>The final file should go into the top commit, so we can just use <code>git commit --amend</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="cp"># Bring up uncommited changes.</span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">stash</span><span class="w"> </span><span class="n">apply</span><span class="w"></span>
+<span class="n">On</span><span class="w"> </span><span class="n">branch</span><span class="w"> </span><span class="n">master</span><span class="w"></span>
+<span class="n">Changes</span><span class="w"> </span><span class="n">not</span><span class="w"> </span><span class="n">staged</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">commit</span><span class="o">:</span><span class="w"></span>
+<span class="w">  </span><span class="p">(</span><span class="n">use</span><span class="w"> </span><span class="s">&quot;git add &lt;file&gt;...&quot;</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">update</span><span class="w"> </span><span class="n">what</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">committed</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="p">(</span><span class="n">use</span><span class="w"> </span><span class="s">&quot;git checkout -- &lt;file&gt;...&quot;</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">discard</span><span class="w"> </span><span class="n">changes</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">working</span><span class="w"> </span><span class="n">directory</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="nl">modified</span><span class="p">:</span><span class="w">   </span><span class="n">file3</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+
+<span class="n">no</span><span class="w"> </span><span class="n">changes</span><span class="w"> </span><span class="n">added</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">commit</span><span class="w"> </span><span class="p">(</span><span class="n">use</span><span class="w"> </span><span class="s">&quot;git add&quot;</span><span class="w"> </span><span class="n">and</span><span class="o">/</span><span class="n">or</span><span class="w"> </span><span class="s">&quot;git commit -a&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">file3</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+<span class="n">romunov</span><span class="p">@</span><span class="n">mucek</span><span class="o">:~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">fixme$</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">commit</span><span class="w"> </span><span class="o">--</span><span class="n">amend</span><span class="w"></span>
+<span class="p">[</span><span class="n">master</span><span class="w"> </span><span class="n">c251243</span><span class="p">]</span><span class="w"> </span><span class="n">Add</span><span class="w"> </span><span class="n">file3</span><span class="w"></span>
+<span class="w"> </span><span class="nl">Date</span><span class="p">:</span><span class="w"> </span><span class="n">Thu</span><span class="w"> </span><span class="n">Jun</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">16</span><span class="o">:</span><span class="mi">22</span><span class="o">:</span><span class="mi">47</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="o">+</span><span class="mo">0200</span><span class="w"></span>
+<span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">changed</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">insertions</span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="n">create</span><span class="w"> </span><span class="n">mode</span><span class="w"> </span><span class="mi">100644</span><span class="w"> </span><span class="n">file3</span><span class="p">.</span><span class="n">txt</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>You should now have a clean workspace with changes in their respective commits.</p>
+<p><strong>CAVEAT</strong>
+Do this only on private branches, unless you are the only person working on <code>master</code> branch. If you force push these changes, your collaborators may throw you off of the nearest bridge.</p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>1995 style links</h2>
+                        <ul>
+                            <li><a href="https://stackoverflow.com/users/322912/roman-lu%C5%A1trik">visit me on StackOverFlow</a></li>
+                            <li><a href="http://metinalista.si/category/metamorfoza">#metamorfoza podcast (SI)</a></li>
+                            <li><a href="https://www.r-bloggers.com">r-bloggers</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://biolitika.si/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/all.rss.xml" type="application/rss+xml" rel="alternate">RSS feed</a></li>
+                            <li><a href="https://biolitika.si/feeds/{slug}.rss.xml" type="application/rss+xml" rel="alternate">Tag RSS feed</a></li>
+
+                            <li><a href="https://github.com/romunov">GitHub</a></li>
+                            <li><a href="https://twitter.com/romunov">Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/roman-lu%C5%A1trik-5a6586ab">LinkedIn</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-22752654-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+</body>
+</html>
